@@ -349,7 +349,7 @@ const Home = ({ language }) => {
               </div>
               <div className="flex items-center gap-4 mb-6">
                 <img
-                  src="/My Image.jpg"
+                  src={`${import.meta.env.BASE_URL}My Image.jpg`}
                   alt="Portrait of Aditya Sharma"
                   loading="eager"
                   decoding="async"
