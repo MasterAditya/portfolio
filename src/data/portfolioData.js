@@ -6,7 +6,7 @@
   location: "Ludhiana, India",
   github: "https://github.com/MasterAditya",
   linkedin: "https://www.linkedin.com/in/ursadityasharma",
-  resume: "/resume.pdf",
+  resume: "resume.pdf",
   focusAreas: ["Async Processing", "System Reliability", "Clean Architecture", "Testing Discipline"],
   heroStats: [
     { label: "Core Systems", target: 3 },
@@ -25,7 +25,7 @@ export const resumeDocuments = [
     useCaseDe: "Campus-Praktika",
     context: "For internships and campus recruitment drives at LPU and partner institutions",
     contextDe: "Fuer Praktika und Campus-Rekrutierung bei LPU und Partnerinstitutionen",
-    file: "/resumes/university-template-demo.pdf",
+    file: "resumes/university-template-demo.pdf",
     note: "Includes academic profile, internship exposure, and campus-ready format",
     noteDe: "Enthaelt akademisches Profil, Praktikumserfahrung und campusgerechtes Format",
     badge: "Campus"
@@ -38,7 +38,7 @@ export const resumeDocuments = [
     useCaseDe: "Internationale Positionen",
     context: "For roles at global companies and international job applications",
     contextDe: "Fuer Stellen bei globalen Unternehmen und internationale Bewerbungen",
-    file: "/resumes/official-english-resume-demo.pdf",
+    file: "resumes/official-english-resume-demo.pdf",
     note: "Primary version for international backend and AI systems applications",
     noteDe: "Primaere Version fuer internationale Bewerbungen im Backend- und KI-Systems-Bereich",
     badge: "Global"
@@ -51,7 +51,7 @@ export const resumeDocuments = [
     useCaseDe: "Deutsche & EU-Positionen",
     context: "For German-speaking companies and EU job applications (German CV format)",
     contextDe: "Fuer deutschsprachige Unternehmen und EU-Bewerbungen (deutsches CV-Format)",
-    file: "/resumes/official-german-resume-demo.pdf",
+    file: "resumes/official-german-resume-demo.pdf",
     note: "Prepared for German and broader EU engineering applications",
     noteDe: "Vorbereitet fuer deutsche und weitere EU-Engineering-Bewerbungen",
     badge: "Deutsch"
