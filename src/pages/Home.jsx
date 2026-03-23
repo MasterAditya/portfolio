@@ -85,6 +85,12 @@ const Home = ({ language }) => {
   };
   const t = copy[language];
 
+  const withBaseUrl = (path) => {
+    if (!path) return path;
+    if (/^(https?:|mailto:|tel:|#)/.test(path)) return path;
+    return `${import.meta.env.BASE_URL}${path.replace(/^\/+/, '')}`;
+  };
+
   const localizedProfile = useMemo(() => {
     if (language === 'de') {
       return {
@@ -447,7 +453,7 @@ const Home = ({ language }) => {
                   )}
                 </div>
                 <a
-                  href={resumeDocuments[1].file}
+                  href={withBaseUrl(resumeDocuments[1].file)}
                   download
                   className="btn-secondary inline-flex items-center gap-2"
                 >
@@ -560,7 +566,7 @@ const Home = ({ language }) => {
 
                 <div className="px-6 pb-6 pt-4 border-t border-[var(--border)]">
                   <a
-                    href={doc.file}
+                    href={withBaseUrl(doc.file)}
                     download
                     className="w-full btn-secondary inline-flex items-center justify-center gap-2 text-sm"
                   >
