@@ -1,26 +1,27 @@
 import { useEffect, useState } from 'react';
 import { Menu, X } from 'lucide-react';
 
-const Navbar = ({ language, setLanguage }) => {
+const Navbar = ({ language, setLanguage, currentPage = 'home' }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
 
   const navItems = [
-    { id: 'home', en: 'Home', de: 'Start' },
-    { id: 'about', en: 'About', de: 'Ueber Mich' },
-    { id: 'focus', en: 'Focus', de: 'Fokus' },
-    { id: 'principles', en: 'Principles', de: 'Prinzipien' },
-    { id: 'resume', en: 'Resumes', de: 'Lebenslaeufe' },
-    { id: 'education', en: 'Education', de: 'Bildung' },
-    { id: 'skills', en: 'Skills', de: 'Faehigkeiten' },
-    { id: 'readiness', en: 'Practices', de: 'Praktiken' },
-    { id: 'projects', en: 'Projects', de: 'Projekte' },
-    { id: 'certifications', en: 'Certifications', de: 'Zertifikate' },
-    { id: 'achievements', en: 'Highlights', de: 'Highlights' },
-    { id: 'contact', en: 'Contact', de: 'Kontakt' }
+    { id: 'home', en: 'Home', de: 'Start', subsections: [] },
+    { id: 'featured', en: 'Featured', de: 'Flaggschiff', subsections: [] },
+    { id: 'projects', en: 'Projects', de: 'Projekte', subsections: [] },
+    { id: 'capabilities', en: 'Capabilities', de: 'Fähigkeiten', subsections: [] },
+    { id: 'resume', en: 'Resume', de: 'Lebenslauf', subsections: [] },
+    { id: 'contact', en: 'Contact', de: 'Kontakt', subsections: [] }
   ];
 
+  const [showSubNav, setShowSubNav] = useState(false);
+
   useEffect(() => {
+    if (currentPage === 'projects') {
+      setActiveSection('projects');
+      return;
+    }
+
     const sections = navItems
       .map((item) => document.getElementById(item.id))
       .filter(Boolean);
@@ -41,42 +42,80 @@ const Navbar = ({ language, setLanguage }) => {
     sections.forEach((section) => observer.observe(section));
 
     return () => observer.disconnect();
-  }, []);
+  }, [currentPage]);
 
   const scrollToSection = (section) => {
+    // Close mobile menu
+    setIsOpen(false);
+    setShowSubNav(false);
+
+    // Handle Projects page routing
+    if (section === 'projects') {
+      window.location.hash = '/projects';
+      return;
+    }
+
+    // If currently on projects page, navigate back to home first
+    if (currentPage === 'projects') {
+      window.location.hash = '';
+      setTimeout(() => {
+        const element = document.getElementById(section);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+      return;
+    }
+
+    // Normal section navigation on home page
     const element = document.getElementById(section);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-      setIsOpen(false);
+      const offset = 64; // navbar height
+      const elementPosition = element.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({
+        top: elementPosition,
+        behavior: 'smooth'
+      });
     }
   };
 
   return (
-    <nav className="fixed top-0 w-full bg-[var(--card)] border-b border-[var(--border)] z-50">
+    <nav className="fixed top-0 w-full bg-[var(--card)] border-b border-[var(--border)] z-50 backdrop-blur-sm bg-opacity-95">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <div className="text-lg font-bold text-gray-900 tracking-tight">Aditya Sharma</div>
+          {/* Brand */}
+          <button 
+            onClick={() => scrollToSection('home')}
+            className="text-lg font-bold text-gray-900 tracking-tight hover:text-[var(--primary)] transition-colors"
+          >
+            AS
+          </button>
 
-          <div className="hidden md:flex items-center space-x-6">
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-1">
             {navItems.map((item) => (
               <button
                 key={item.id}
                 onClick={() => scrollToSection(item.id)}
-                className={`mono text-xs uppercase tracking-wider ${
+                className={`mono text-xs px-3 py-2 rounded-md uppercase tracking-wider transition-colors font-medium ${
                   activeSection === item.id
-                    ? 'text-[var(--primary)]'
-                    : 'text-[var(--text-secondary)] hover:text-[var(--secondary)]'
+                    ? 'text-[var(--primary)] bg-[var(--primary)]/5'
+                    : 'text-[var(--text-secondary)] hover:text-[var(--secondary)] hover:bg-gray-100'
                 }`}
+                aria-current={activeSection === item.id ? 'page' : undefined}
               >
                 {language === 'de' ? item.de : item.en}
               </button>
             ))}
+          </div>
 
+          {/* Language Switcher & Mobile Menu */}
+          <div className="flex items-center space-x-4">
             <div className="inline-flex rounded-full border border-[var(--border)] bg-[var(--card)] p-1">
               <button
                 type="button"
                 onClick={() => setLanguage('en')}
-                className={`mono text-xs px-3 py-1 rounded-full ${
+                className={`mono text-xs px-3 py-1 rounded-full font-medium transition-colors ${
                   language === 'en' ? 'bg-gray-900 text-white' : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
@@ -85,62 +124,43 @@ const Navbar = ({ language, setLanguage }) => {
               <button
                 type="button"
                 onClick={() => setLanguage('de')}
-                className={`mono text-xs px-3 py-1 rounded-full ${
+                className={`mono text-xs px-3 py-1 rounded-full font-medium transition-colors ${
                   language === 'de' ? 'bg-gray-900 text-white' : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
                 DE
               </button>
             </div>
-          </div>
 
-          <button
-            className="md:hidden"
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+            <button
+              className="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              onClick={() => setIsOpen(!isOpen)}
+              aria-expanded={isOpen}
+              aria-label="Toggle menu"
+            >
+              {isOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
       </div>
 
+      {/* Mobile Navigation */}
       {isOpen && (
-        <div className="md:hidden bg-[var(--card)] border-t border-[var(--border)]">
-          <div className="px-2 pt-2 pb-3 space-y-1">
+        <div className="md:hidden border-t border-[var(--border)]">
+          <div className="px-2 pt-2 pb-3 space-y-1 bg-gradient-to-b from-[var(--card)] to-[var(--background)]">
             {navItems.map((item) => (
               <button
                 key={item.id}
                 onClick={() => scrollToSection(item.id)}
-                className={`block w-full text-left px-3 py-2 text-sm ${
+                className={`block w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                   activeSection === item.id
-                    ? 'text-[var(--primary)] bg-[#fef2f2]'
-                    : 'text-[var(--text-secondary)] hover:text-[var(--secondary)] hover:bg-[#f3f4f6]'
+                    ? 'text-[var(--primary)] bg-[var(--primary)]/5'
+                    : 'text-[var(--text-secondary)] hover:text-[var(--secondary)] hover:bg-gray-100'
                 }`}
               >
                 {language === 'de' ? item.de : item.en}
               </button>
             ))}
-            <div className="px-3 pt-2">
-              <div className="inline-flex rounded-full border border-[var(--border)] bg-[var(--card)] p-1">
-                <button
-                  type="button"
-                  onClick={() => setLanguage('en')}
-                  className={`mono text-xs px-3 py-1 rounded-full ${
-                    language === 'en' ? 'bg-gray-900 text-white' : 'text-gray-600 hover:text-gray-900'
-                  }`}
-                >
-                  EN
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setLanguage('de')}
-                  className={`mono text-xs px-3 py-1 rounded-full ${
-                    language === 'de' ? 'bg-gray-900 text-white' : 'text-gray-600 hover:text-gray-900'
-                  }`}
-                >
-                  DE
-                </button>
-              </div>
-            </div>
           </div>
         </div>
       )}

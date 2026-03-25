@@ -1,5 +1,5 @@
 import { contact } from '../data/portfolioData';
-import { Mail, Phone, Github, Linkedin } from 'lucide-react';
+import { Mail, Zap, Github, Linkedin } from 'lucide-react';
 
 const Contact = ({ language = 'en' }) => {
   const t = {
@@ -22,51 +22,57 @@ const Contact = ({ language = 'en' }) => {
     linkedin: 'LinkedIn',
     viewProfile: language === 'de' ? 'Profil ansehen' : 'View Profile',
     connect: language === 'de' ? 'Verbinden' : 'Connect',
-    cta: language === 'de' ? 'Kontakt' : 'Contact Me'
+    cta: language === 'de' ? 'Kontakt' : 'Contact Me',
+    availability: language === 'de' ? 'Verfügbarkeit' : 'Availability',
+    availabilityStatus: language === 'de' ? 'Offen für Gelegenheiten' : 'Open to Opportunities',
+    availabilityDesc: language === 'de' ? 'Backend • KI-Systeme • Plattformen' : 'Backend • AI Systems • Platforms'
   };
 
   return (
-    <section id="contact" className="py-20 bg-[var(--background)] section-reveal">
+    <section id="contact" className="py-32 bg-gradient-to-b from-[var(--background)] via-white to-[var(--background)] section-reveal border-t-2 border-[var(--border)]">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="section-title">{t.heading}</h2>
-        <p className="section-subtitle max-w-3xl mx-auto">
+        <p className="mono text-xs uppercase tracking-widest text-[var(--primary)] font-semibold mb-3 text-center">Get In Touch</p>
+        <h2 className="section-title mb-3">{t.heading}</h2>
+        <p className="section-subtitle max-w-3xl mx-auto mb-8">
           {t.intro} {t.based}
         </p>
 
-        <div className="text-center mb-8">
+        <div className="text-center mb-12">
           <a
             href={`mailto:${contact.email}?subject=Intro%20Call%20for%20AI%20Role`}
             className="btn-accent inline-flex items-center gap-2"
           >
             {t.cta}
           </a>
-          <p className="mt-3 text-sm text-gray-600">{t.support}</p>
+          <p className="mt-4 text-sm text-gray-600 font-medium">{t.support}</p>
         </div>
 
         <div className="max-w-3xl mx-auto grid md:grid-cols-2 gap-6">
           <a
             href={`mailto:${contact.email}`}
-            className="card flex items-center gap-4 hover:bg-[#f3f4f6]"
+            className="card flex items-center gap-4 hover:shadow-md transition-shadow"
           >
-            <div className="bg-[var(--background)] p-3 rounded-lg border border-[var(--border)]">
+            <div className="bg-[var(--primary)]/5 p-3 rounded-lg border border-[var(--primary)]/10">
               <Mail className="icon-primary" size={20} />
             </div>
             <div>
-              <p className="text-sm text-gray-500">{t.email}</p>
-              <p className="text-gray-800 font-medium">{contact.email}</p>
+              <p className="text-sm text-gray-500 font-medium">{t.email}</p>
+              <p className="text-gray-800 font-semibold">{contact.email}</p>
             </div>
           </a>
 
           <a
             href={`tel:${contact.phone}`}
-            className="card flex items-center gap-4 hover:bg-[#f3f4f6]"
+            title="Call or WhatsApp"
+            className="card flex items-center gap-4 hover:shadow-md transition-shadow"
           >
-            <div className="bg-[var(--background)] p-3 rounded-lg border border-[var(--border)]">
-              <Phone className="icon-primary" size={20} />
+            <div className="bg-[var(--primary)]/5 p-3 rounded-lg border border-[var(--primary)]/10">
+              <Zap className="icon-primary" size={20} />
             </div>
             <div>
-              <p className="text-sm text-gray-500">{t.phone}</p>
-              <p className="text-gray-800 font-medium">{contact.phone}</p>
+              <p className="text-sm text-gray-500 font-medium">{t.availability}</p>
+              <p className="text-gray-800 font-semibold">{t.availabilityStatus}</p>
+              <p className="text-xs text-gray-600 mt-1">{t.availabilityDesc}</p>
             </div>
           </a>
 
@@ -74,14 +80,14 @@ const Contact = ({ language = 'en' }) => {
             href={contact.github}
             target="_blank"
             rel="noopener noreferrer"
-            className="card flex items-center gap-4 hover:bg-[#f3f4f6]"
+            className="card flex items-center gap-4 hover:shadow-md transition-shadow"
           >
-            <div className="bg-[var(--background)] p-3 rounded-lg border border-[var(--border)]">
+            <div className="bg-[var(--primary)]/5 p-3 rounded-lg border border-[var(--primary)]/10">
               <Github className="icon-primary" size={20} />
             </div>
             <div>
-              <p className="text-sm text-gray-500">{t.github}</p>
-              <p className="text-gray-800 font-medium">{t.viewProfile}</p>
+              <p className="text-sm text-gray-500 font-medium">{t.github}</p>
+              <p className="text-gray-800 font-semibold">{t.viewProfile}</p>
             </div>
           </a>
 
@@ -89,14 +95,14 @@ const Contact = ({ language = 'en' }) => {
             href={contact.linkedin}
             target="_blank"
             rel="noopener noreferrer"
-            className="card flex items-center gap-4 hover:bg-[#f3f4f6]"
+            className="card flex items-center gap-4 hover:shadow-md transition-shadow"
           >
-            <div className="bg-[var(--background)] p-3 rounded-lg border border-[var(--border)]">
+            <div className="bg-[var(--primary)]/5 p-3 rounded-lg border border-[var(--primary)]/10">
               <Linkedin className="icon-primary" size={20} />
             </div>
             <div>
-              <p className="text-sm text-gray-500">{t.linkedin}</p>
-              <p className="text-gray-800 font-medium">{t.connect}</p>
+              <p className="text-sm text-gray-500 font-medium">{t.linkedin}</p>
+              <p className="text-gray-800 font-semibold">{t.connect}</p>
             </div>
           </a>
         </div>

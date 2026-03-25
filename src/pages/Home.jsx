@@ -1,89 +1,83 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import {
   personalInfo,
-  about,
   projects,
-  aiImpact,
-  currentlyBuilding,
-  projectFilters,
   resumeDocuments,
-  engineeringReliability,
-  credibility,
-  complianceLinks,
   contact
 } from '../data/portfolioData';
 import { Github, Linkedin, Download, ArrowUpRight, CheckCircle2, Mail, Phone, ChevronDown } from 'lucide-react';
+import { skills } from '../data/portfolioData';
 import ProjectCard from '../components/ProjectCard';
-import Skills from '../components/Skills';
-import Education from '../components/Education';
 import Certifications from '../components/Certifications';
-import Achievements from '../components/Achievements';
 import Contact from '../components/Contact';
+import ProjectDetailView from '../components/ProjectDetailView';
+import EngineeeringCapabilities from '../components/EngineeeringCapabilities';
+import CollapsibleFooterSection from '../components/CollapsibleFooterSection';
 
 const Home = ({ language }) => {
-  const [activeFilter, setActiveFilter] = useState('All');
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [privacyOpen, setPrivacyOpen] = useState(false);
+  const [legalOpen, setLegalOpen] = useState(false);
   const [contactMenuOpen, setContactMenuOpen] = useState(false);
   const [animatedStats, setAnimatedStats] = useState(() =>
     personalInfo.heroStats.map(() => 0)
   );
+  const contactMenuRef = useRef(null);
+
+  // Handle click outside to close contact menu
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (contactMenuRef.current && !contactMenuRef.current.contains(event.target)) {
+        setContactMenuOpen(false);
+      }
+    };
+
+    if (contactMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [contactMenuOpen]);
 
   const copy = {
     en: {
       portfolioLabel: 'Backend Engineering Portfolio',
-      viewProjects: 'View Engineering Projects',
-      resume: 'Resume',
-      contactMe: 'Contact Me',
+      viewProjects: 'Explore Projects',
+      contactMe: 'Contact',
       performanceSnapshot: 'Performance Snapshot',
-      currentlyBuilding: 'Current Engineering Work',
-      about: 'About',
-      focus: 'Engineering Focus',
-      principles: 'Engineering Principles',
-      principlesHelper: 'Core practices behind how I design and ship backend systems',
-      impact: 'System Metrics',
-      reliability: 'Engineering Reliability',
-      readiness: 'Engineering Practices',
-      readinessHelper: 'Practical practices used in day-to-day backend delivery',
-      resumeSection: 'Resumes',
-      resumeHelper: 'University template and official CV versions',
-      credibility: 'Documentation and Collaboration Signals',
-      caseStudies: 'Backend Engineering Projects',
-      filterHelper: 'Filter by stack or domain',
-      euSignalOne: 'Interested in backend engineering environments common in German and European product teams.',
-      workingLanguage: 'Working language: English | Learning German.',
-      noMatch: 'No projects match this filter yet.',
+      noMatch: 'No projects found.',
       rights: 'All rights reserved.',
       policy: 'Privacy Policy',
-      legal: 'Legal Notice'
+      legal: 'Legal Notice',
+      resumeSection: 'Resumes',
+      resumeHelper: 'University template and official CV versions',
+      otherProjects: 'Other Projects',
+      skillsSection: 'Skills & Expertise',
+      skillsHelper: 'Core backend systems, AI/ML, and reliable infrastructure',
+      exploreFull: 'Explore Full Skills',
+      availability: 'Open to Opportunities',
+      availabilityDesc: 'Backend Engineering • AI Systems • Platform Engineering'
     },
     de: {
       portfolioLabel: 'Backend-Engineering-Portfolio',
-      viewProjects: 'Engineering-Projekte ansehen',
-      resume: 'Lebenslauf',
+      viewProjects: 'Projekte erkunden',
       contactMe: 'Kontakt',
-      performanceSnapshot: 'Leistungsueberblick',
-      currentlyBuilding: 'Aktuelle Engineering-Arbeit',
-      about: 'Ueber Mich',
-      focus: 'Engineering-Fokus',
-      principles: 'Engineering-Prinzipien',
-      principlesHelper: 'Kernpraktiken, nach denen ich Backend-Systeme entwerfe und ausliefere',
-      impact: 'Systemmetriken',
-      reliability: 'Engineering-Zuverlaessigkeit',
-      readiness: 'Engineering-Praktiken',
-      readinessHelper: 'Praktische Arbeitsweisen fuer taegliche Backend-Umsetzung',
-      resumeSection: 'Lebenslaeufe',
-      resumeHelper: 'Universitaetsvorlage und offizielle CV-Versionen',
-      credibility: 'Dokumentations- und Kollaborationssignale',
-      caseStudies: 'Backend-Engineering-Projekte',
-      filterHelper: 'Nach Stack oder Bereich filtern',
-      euSignalOne: 'Interesse an Backend-Engineering-Umfeldern, wie sie in deutschen und europaeischen Produktteams ueblich sind.',
-      workingLanguage: 'Arbeitssprache: Englisch | Deutsch im Aufbau.',
-      noMatch: 'Keine Projekte entsprechen diesem Filter.',
+      performanceSnapshot: 'Leistungsüberblick',
+      noMatch: 'Keine Projekte gefunden.',
       rights: 'Alle Rechte vorbehalten.',
       policy: 'Datenschutz',
-      legal: 'Impressum'
+      legal: 'Impressum',
+      resumeSection: 'Lebensläufe',
+      resumeHelper: 'Universitätsvorlage und offizielle CV-Versionen',
+      otherProjects: 'Weitere Projekte',
+      skillsSection: 'Fähigkeiten & Expertise',
+      skillsHelper: 'Kern-Backend-Systeme, KI/ML und zuverlässige Infrastruktur',
+      exploreFull: 'Vollständige Fähigkeiten erkunden',
+      availability: 'Offen für Gelegenheiten',
+      availabilityDesc: 'Backend-Engineering • KI-Systeme • Plattform-Technik'
     }
   };
-  const t = copy[language];
+
+  const t = copy[language] || copy.en;
 
   const withBaseUrl = (path) => {
     if (!path) return path;
@@ -91,123 +85,27 @@ const Home = ({ language }) => {
     return `${import.meta.env.BASE_URL}${path.replace(/^\/+/, '')}`;
   };
 
-  const localizedProfile = useMemo(() => {
-    if (language === 'de') {
-      return {
-        title: 'Backend Engineer | KI-Systems-Entwickler',
-        tagline: 'Fokus auf zuverlaessige Backend-Architektur und sauberes Systemdesign.',
-        summary:
-          'Ich entwickle Backend-Systeme fuer Dokumentenverarbeitung, KI-Pipelines und skalierbare APIs. Meine Arbeit legt den Fokus auf Zuverlaessigkeit, Testdisziplin und wartbare Architektur.',
-        about:
-          'Ich bin Informatikstudent mit Schwerpunkt Backend-Engineering und KI-Systeme. Mein Fokus liegt auf zuverlaessigen Backend-Systemen, asynchronen Verarbeitungs-Pipelines und Datensystemen mit klarem Zuverlaessigkeitsfokus.',
-        focusAreas: ['Asynchrone Verarbeitung', 'Systemzuverlaessigkeit', 'Saubere Architektur', 'Testdisziplin'],
-        currentlyBuilding: [
-          'CI/CD-Workflows fuer Backend-Systeme',
-          'Containerisierte API-Deployments mit reproduzierbaren Umgebungen',
-          'Strukturierte technische Dokumentation fuer Engineering-Handover'
-        ]
-      };
-    }
-
-    return {
-      title: personalInfo.title,
-      tagline: personalInfo.tagline,
-      summary: personalInfo.summary,
-      about: about.description,
-      focusAreas: personalInfo.focusAreas,
-      currentlyBuilding
-    };
-  }, [language]);
-
-  const localizedImpact = useMemo(() => {
-    if (language !== 'de') {
-      return aiImpact;
-    }
-
-    const de = {
-      1: { title: 'Verarbeitungszeit', detail: 'Gemessene Dokumentenverarbeitung fuer 5MB+ Dateien in asynchronen Pipeline-Durchlaeufen.' },
-      2: { title: 'Testabdeckung', detail: 'Abdeckung auf zentralen Backend-Modulen mit Pytest Unit- und Integrationstests.' },
-      3: { title: 'Datensatzgroesse', detail: 'Verarbeitete und indizierte Seiten in Backend-Ingestion-Workflows.' }
-    };
-
-    return aiImpact.map((item) => ({
-      ...item,
-      title: de[item.id]?.title || item.title,
-      detail: de[item.id]?.detail || item.detail
-    }));
-  }, [language]);
-
   const localizedProjects = useMemo(() => {
     if (language !== 'de') {
       return projects;
     }
-
-    const de = {
-      1: {
-        description: 'Backend-System fuer Dokumenten-Ingestion, Entitaetenextraktion und Beziehungsabbildung in Neo4j.',
-        problem: 'Dokumentenlastige Workflows hatten keine konsistente Extraktion und nachgelagerte Retrieval-Struktur.',
-        architecture: 'FastAPI-Worker, Neo4j-Graph-Schema, containerisierte Auslieferung und Pytest-Testsuite.',
-        impact: ['88% Testabdeckung', '~1.2s Verarbeitung fuer 5MB+ Dateien', 'Stabile Verarbeitung unter Parallel-Last'],
-        decisions: [
-          'Asynchrone Pipeline fuer Lastspitzen bei der Ingestion',
-          'Graph-Schema fuer relationenorientierte Traversierung',
-          'Containerisierte Releases fuer reproduzierbare Auslieferung'
-        ],
-        tradeoffs: [
-          'Hoehere Betriebs-Komplexitaet gegenueber Single-Container-Ansatz',
-          'Strenge Schema-Qualitaetspruefung erhoeht initialen Implementierungsaufwand'
-        ],
-        outcome: 'Zuverlaessige Extraktion unter Last mit konsistenteren Abfrageergebnissen und niedrigerer Latenz.',
-        nextStep: 'Erweiterte Observability-Dashboards und Qualitaetsmonitoring fuer Extraktion.',
-        status: 'Abgeschlossen',
-        category: 'Document Processing Backend'
-      },
-      2: {
-        description: 'Ingestion-Pipeline fuer Chunking, Embedding und Retrieval-Indizierung grosser Dokumentmengen.',
-        problem: 'Hohe Ingestion-Last beeintraechtigte API-Reaktionszeiten und Konsistenz der Retrieval-Vorbereitung.',
-        architecture: 'Chunking- und Embedding-Worker mit Redis-Queue-Isolation, ChromaDB-Indizierung und CI-Pruefungen.',
-        impact: ['1000+ Seiten verarbeitet', 'Nicht-blockierende Hintergrundjobs', 'Automatisierte Qualitaetspruefung pro PR'],
-        decisions: [
-          'Isolierte Background-Queues fuer stabile API-Reaktionszeiten',
-          'Semantisches Chunking statt fixer Zeichenlaenge',
-          'Automatisierte Qualitaetspruefung als Merge-Gate'
-        ],
-        tradeoffs: [
-          'Etwas laengere Ingestion-Zeit fuer bessere Retrieval-Qualitaet',
-          'Mehr Infrastruktur-Komponenten fuer Betrieb und Monitoring'
-        ],
-        outcome: 'Reproduzierbarer Ingestion-Workflow mit stabilerem API-Verhalten und strukturierter CI-Validierung.',
-        nextStep: 'Evaluations-Harness fuer Retrieval und breitere Integrationstests.',
-        status: 'Abgeschlossen',
-        category: 'RAG-Pipeline'
-      },
-      3: {
-        description: 'Backend-System und NLP-Pipeline zur Umwandlung unstrukturierter Logistikmeldungen in georaeumliche Vorfallsignale.',
-        problem: 'Betriebsteams brauchten Vorfallkontext aus Freitextlogs, nicht nur Positionsdaten.',
-        architecture: 'FastAPI-Services, PostgreSQL/PostGIS-Datenebene und hybride NLP-Pipeline mit deterministischer Sicherheitslogik.',
-        impact: ['Verarbeitet unstrukturierte Logistikmeldungen', 'Erklaerbare Klassifikation fuer Betriebsentscheidungen', 'Lagebild mit Schweregrad-Einstufung'],
-        decisions: [
-          'Hybrides ML plus deterministische Overrides fuer sicherheitskritische Recall-Ziele',
-          'PostGIS-Indexierung fuer performante georaeumliche Vorfallabfragen',
-          'Erklaerungspanel zur Nachvollziehbarkeit von Modellausgaben'
-        ],
-        tradeoffs: [
-          'Regelpflege-Aufwand fuer robuste Sicherheitsheuristiken',
-          'Bewusst einfaches Modell fuer Interpretierbarkeit und niedrige Latenz'
-        ],
-        outcome: 'Freitext-Meldungen werden in strukturierte Vorfallsignale mit erklaerbarer Schweregradklassifikation ueberfuehrt.',
-        nextStep: 'Live-Event-Streaming und erweitertes End-to-End-Monitoring integrieren.',
-        status: 'Abgeschlossen',
-        category: 'GeoAI Backend'
-      }
-    };
-
     return projects.map((project) => ({
       ...project,
-      ...(de[project.id] || {})
+      title: project.titleDe || project.title,
+      description: project.descriptionDe || project.description,
     }));
   }, [language]);
 
+  const featuredProject = useMemo(
+    () => localizedProjects.find((project) => project.id === 2),
+    [localizedProjects]
+  );
+
+  const otherProjects = useMemo(() => {
+    return localizedProjects.filter((project) => project.id !== 2);
+  }, [localizedProjects]);
+
+  // Animation
   useEffect(() => {
     const duration = 1200;
     const startTime = performance.now();
@@ -215,7 +113,7 @@ const Home = ({ language }) => {
     const tick = (currentTime) => {
       const progress = Math.min((currentTime - startTime) / duration, 1);
       setAnimatedStats(
-        personalInfo.heroStats.map((item) => Number((item.target * progress).toFixed(item.decimals ?? 0)))
+        personalInfo.heroStats.map((item) => (item.target || 0) * progress)
       );
 
       if (progress < 1) {
@@ -232,488 +130,427 @@ const Home = ({ language }) => {
     return `${item.prefix ?? ''}${formattedValue}${item.suffix ?? ''}`;
   };
 
-  const filteredProjects = useMemo(() => {
-    if (activeFilter === 'All') {
-      return localizedProjects;
-    }
-
-    return localizedProjects.filter(
-      (project) =>
-        project.category === activeFilter ||
-        project.techStack.includes(activeFilter)
-    );
-  }, [activeFilter, localizedProjects]);
-
-  const getFilterLabel = (filter) => {
-    if (language !== 'de') {
-      return filter;
-    }
-
-    const map = {
-      All: 'Alle',
-      'Document Processing Backend': 'Dokumentenverarbeitungs-Backend',
-      'RAG Pipeline': 'RAG-Pipeline',
-      'GeoAI Backend': 'GeoKI-Backend'
-    };
-
-    return map[filter] || filter;
-  };
-
-  const localizedReliability = useMemo(() => {
-    if (language !== 'de') {
-      return engineeringReliability;
-    }
-
-    const labels = {
-      'Engineering Practice': 'Engineering-Praktik',
-      'CI workflows with automated testing': 'CI-Workflows mit automatisierten Tests',
-      'Containerized deployment pipelines': 'Containerisierte Deployment-Pipelines',
-      'Async processing architecture': 'Asynchrone Verarbeitungsarchitektur',
-      'Structured testing coverage': 'Strukturierte Testabdeckung',
-      'Pull requests run structured checks before merge.': 'Pull Requests durchlaufen strukturierte Pruefungen vor dem Merge.',
-      'Services are packaged consistently for reproducible deployment.': 'Services werden konsistent verpackt fuer reproduzierbare Deployments.',
-      'Background workers keep APIs responsive under ingestion load.': 'Hintergrund-Worker halten APIs unter Ingestion-Last reaktionsfaehig.',
-      'Unit and integration tests are maintained on core service paths.': 'Unit- und Integrationstests werden auf zentralen Service-Pfaden gepflegt.'
-    };
-
-    return engineeringReliability.map((item) => ({
-      ...item,
-      label: labels[item.label] || item.label,
-      metric: labels[item.metric] || item.metric,
-      detail: labels[item.detail] || item.detail
-    }));
-  }, [language]);
-
-  const engineeringPrinciples = useMemo(() => {
-    if (language === 'de') {
-      return [
-        'Testgetriebene Entwicklungs-Denkweise',
-        'Observability-orientiertes Backend-Design',
-        'Datenschutzbewusste Datenverarbeitung',
-        'Reproduzierbare Deployments',
-        'Dokumentationsorientierte Entwicklung'
-      ];
-    }
-
-    return [
-      'Test-driven development mindset',
-      'Observability-first backend design',
-      'Privacy-aware data processing',
-      'Reproducible deployments',
-      'Documentation-first development'
-    ];
-  }, [language]);
-
-  const engineeringReadiness = useMemo(() => {
-    if (language === 'de') {
-      return [
-        'Setzt CI/CD-Workflows in Projekten praktisch ein',
-        'Entwickelt containerisierte Services',
-        'Folgt strukturierten Testpraktiken',
-        'Pflegt reproduzierbare Projekt-Setups',
-        'Schreibt technische Dokumentation fuer Uebergaben'
-      ];
-    }
-
-    return [
-      'Practices CI/CD workflows',
-      'Builds containerized services',
-      'Follows structured testing practices',
-      'Maintains reproducible project setups',
-      'Writes technical documentation'
-    ];
-  }, [language]);
-
-  const engineeringFocus = useMemo(() => {
-    if (language === 'de') {
-      return [
-        'Backend-Systeme',
-        'KI-Systeme',
-        'Verteilte Verarbeitung',
-        'Datenengineering',
-        'Systemzuverlaessigkeit'
-      ];
-    }
-
-    return [
-      'Backend Systems',
-      'AI Systems',
-      'Distributed Processing',
-      'Data Engineering',
-      'System Reliability'
-    ];
-  }, [language]);
-
   return (
-    <div className="pt-16">
-      <section id="home" className="min-h-screen flex items-center euro-grid relative overflow-hidden section-reveal">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
-          <div className="grid lg:grid-cols-[1.2fr_0.8fr] gap-12 items-center">
-            <div className="max-w-3xl">
-              <div className="flex items-center justify-between gap-3 mb-4">
-                <p className="mono text-xs uppercase tracking-[0.2em] text-[var(--primary)]">{t.portfolioLabel}</p>
+    <div className="bg-white relative">
+      {/* Subtle background pattern */}
+      <div className="fixed inset-0 pointer-events-none bg-[radial-gradient(circle_at_1px_1px,_var(--border)_1px,_transparent_1px)] bg-[size:20px_20px] opacity-[0.02]"></div>
+      
+      <div className="relative z-0">
+      {/* HOME SECTION - Intro with scrollable content */}
+      <section id="home" className="relative min-h-screen bg-gradient-to-br from-[var(--background)] via-white to-[var(--primary)]/5 overflow-hidden">
+        {/* Parallax background elements */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-[var(--primary)]/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-[var(--secondary)]/10 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
+        </div>
+
+        <div className="relative pt-32 pb-24">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid lg:grid-cols-[1.2fr_0.8fr] gap-12 items-center min-h-[600px]">
+              <div className="max-w-3xl space-y-6">
+                <p className="mono text-xs uppercase tracking-[0.2em] text-[var(--primary)] mb-4 animate-fadeIn">{t.portfolioLabel}</p>
+                
+                <div className="flex items-center gap-4 mb-8 group">
+                  <img
+                    src={`${import.meta.env.BASE_URL}My Image.jpg`}
+                    alt={`Portrait of ${personalInfo.name}`}
+                    loading="eager"
+                    decoding="async"
+                    fetchpriority="high"
+                    className="rounded-2xl w-20 h-20 md:w-24 md:h-24 object-cover ring-2 ring-[var(--border)] group-hover:ring-[var(--primary)] transition-all duration-300 transform group-hover:scale-105"
+                  />
+                  <div>
+                    <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">{personalInfo.name}</h1>
+                    <p className="text-sm text-[var(--primary)] mono mt-2 font-semibold">{personalInfo.location}</p>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <p className="text-2xl md:text-3xl text-gray-900 font-semibold">
+                    Backend Engineer • AI Systems
+                  </p>
+                  <p className="text-lg text-gray-700 leading-relaxed">
+                    {language === 'de'
+                      ? 'Ich entwickle skalierbare Backend-Systeme mit Fokus auf Dokumentenverarbeitung, KI-Pipelines und zuverlässige APIs. Spezialisiert auf asynchrone Architekturen, Hybrid-ML und Production-Ready Code.'
+                      : 'Building reliable backend systems for document processing, AI pipelines, and scalable APIs. Specialized in async architectures, hybrid ML, and production-grade infrastructure.'}
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  {['FastAPI', 'PostgreSQL', 'Python', 'Docker', 'Redis', 'NLP', 'PostGIS'].map((skill) => (
+                    <span key={skill} className="mono chip text-xs bg-gradient-to-r from-[var(--primary)]/10 to-[var(--secondary)]/10 hover:from-[var(--primary)]/20 hover:to-[var(--secondary)]/20 transition-all">{skill}</span>
+                  ))}
+                </div>
+
+                <div className="flex flex-wrap gap-3 pt-4">
+                  <a href="#featured" className="btn-accent inline-flex items-center gap-2 hover:shadow-lg transition-all">
+                    {t.viewProjects} <ArrowUpRight size={18} />
+                  </a>
+                  <div className="relative" ref={contactMenuRef}>
+                    <button
+                      type="button"
+                      onClick={() => setContactMenuOpen((prev) => !prev)}
+                      className="btn-secondary inline-flex items-center gap-2 hover:shadow-lg transition-all"
+                    >
+                      {t.contactMe}
+                      <ChevronDown size={16} className={`transition-transform ${contactMenuOpen ? 'rotate-180' : ''}`} />
+                    </button>
+
+                    {contactMenuOpen && (
+                      <div className="absolute left-0 mt-2 w-56 rounded-xl border border-[var(--border)] bg-white z-30 p-2 shadow-xl animate-in fade-in slide-in-from-top-2">
+                        <a href={`mailto:${contact.email}`} className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-900 hover:bg-[var(--primary)]/10 transition-colors">
+                          <Mail size={16} className="text-[var(--primary)]" />
+                          Email
+                        </a>
+                        <a href={`tel:${contact.phone}`} className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-900 hover:bg-[var(--primary)]/10 transition-colors">
+                          <Phone size={16} className="text-[var(--primary)]" />
+                          Call
+                        </a>
+                        <a href={contact.github} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-900 hover:bg-[var(--primary)]/10 transition-colors">
+                          <Github size={16} className="text-[var(--primary)]" />
+                          GitHub
+                        </a>
+                        <a href={contact.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-900 hover:bg-[var(--primary)]/10 transition-colors">
+                          <Linkedin size={16} className="text-[var(--primary)]" />
+                          LinkedIn
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+
               </div>
-              <div className="flex items-center gap-4 mb-6">
-                <img
-                  src={`${import.meta.env.BASE_URL}My Image.jpg`}
-                  alt="Portrait of Aditya Sharma"
-                  loading="eager"
-                  decoding="async"
-                  fetchpriority="high"
-                  className="rounded-2xl w-24 h-24 md:w-28 md:h-28 object-cover ring-2 ring-[var(--border)]"
-                />
-                <div>
-                  <p className="mono text-sm text-gray-600">{personalInfo.location}</p>
+
+              {/* Stats Card with Glassmorphism */}
+              <div className="card card-accent border border-white/20 backdrop-blur-xl bg-white/80 hover:bg-white/90 transition-all">
+                <p className="mono text-xs uppercase tracking-widest text-gray-500 mb-6 font-semibold">{t.performanceSnapshot}</p>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  {personalInfo.heroStats.map((item, index) => (
+                    <div key={item.label} className="card bg-gradient-to-br from-white to-gray-50 hover:from-[var(--primary)]/5 hover:to-[var(--secondary)]/5 transition-all">
+                      <p className="mono text-xs text-gray-500 font-semibold uppercase mb-2">{item.label}</p>
+                      <p className="text-3xl font-bold bg-gradient-to-r from-[var(--primary)] to-[var(--secondary)] bg-clip-text text-transparent">
+                        {formatStat(item, animatedStats[index])}
+                      </p>
+                    </div>
+                  ))}
                 </div>
               </div>
-              <h1 className="text-4xl md:text-6xl font-bold text-gray-900 leading-tight mb-4">
-                {personalInfo.name}
-              </h1>
-              <p className="text-xl md:text-2xl text-gray-700 mb-3">
-                {localizedProfile.title}
-              </p>
-              <p className="text-lg text-gray-700 mb-6">{localizedProfile.tagline}</p>
-              <p className="text-lg text-gray-700 mb-8 leading-relaxed">
-                {localizedProfile.summary}
-              </p>
+            </div>
+          </div>
+        </div>
+      </section>
 
-              <div className="flex flex-wrap gap-3 mb-8">
-                {localizedProfile.focusAreas.map((item) => (
-                  <span key={item} className="mono chip">
-                    {item}
-                  </span>
-                ))}
+      {/* FEATURED SECTION */}
+      {featuredProject && (
+        <section id="featured" className="py-32 bg-gradient-to-b from-white via-[var(--background)] to-white relative overflow-hidden border-b-2 border-[var(--border)]/30">
+          {/* Decorative elements */}
+          <div className="absolute top-0 right-0 w-96 h-96 bg-[var(--primary)]/5 rounded-full blur-3xl -mr-32 -mt-32"></div>
+          
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <p className="mono text-xs uppercase tracking-widest text-[var(--primary)] font-semibold mb-4 animate-fadeIn">{language === 'de' ? 'Flaggschiff-System' : 'FLAGSHIP SYSTEM'}</p>
+            
+            <div className="grid lg:grid-cols-2 gap-12 items-start">
+              {/* Left: Curious details & teaser */}
+              <div className="space-y-6">
+                <h2 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight">{featuredProject.title}</h2>
+                
+                {/* Curiosity-raising stats */}
+                <div className="grid grid-cols-2 gap-4">
+                  {featuredProject.impact?.slice(0, 4).map((item, idx) => (
+                    <div key={idx} className="card bg-gradient-to-br from-[var(--primary)]/10 to-[var(--secondary)]/5 hover:from-[var(--primary)]/20 hover:to-[var(--secondary)]/10 transition-all border border-[var(--primary)]/20">
+                      <p className="text-2xl font-bold bg-gradient-to-r from-[var(--primary)] to-[var(--secondary)] bg-clip-text text-transparent">
+                        {item.split(' ')[0]}
+                      </p>
+                      <p className="text-xs text-gray-600 mt-1">{item.split(' ').slice(1).join(' ')}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <p className="text-lg text-gray-700 leading-relaxed">{featuredProject.description}</p>
+
+                <div className="flex flex-wrap gap-2">
+                  {(featuredProject.techStack || []).slice(0, 8).map((tech) => (
+                    <span key={tech} className="mono chip text-xs bg-white border border-[var(--primary)]/30 hover:border-[var(--primary)] hover:bg-[var(--primary)]/5 transition-all">{tech}</span>
+                  ))}
+                </div>
+
+                <div className="flex gap-3 flex-wrap pt-4">
+                  <a
+                    href={featuredProject.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-secondary inline-flex items-center gap-2 hover:shadow-lg transition-all"
+                  >
+                    <Github size={16} />
+                    {language === 'de' ? 'GitHub' : 'View GitHub'}
+                  </a>
+                  <button onClick={() => setSelectedProject(featuredProject)} className="btn-accent inline-flex items-center gap-2 hover:shadow-lg transition-all">
+                    {language === 'de' ? 'Case Study' : 'Read Full Case Study'} <ArrowUpRight size={16} />
+                  </button>
+                </div>
               </div>
 
-              <div className="flex flex-wrap gap-4">
-                <a
-                  href="#projects"
-                  className="btn-accent inline-flex items-center gap-2"
-                >
-                  {t.viewProjects} <ArrowUpRight size={18} />
-                </a>
-                <div
-                  className="relative"
-                  onMouseEnter={() => setContactMenuOpen(true)}
-                  onMouseLeave={() => setContactMenuOpen(false)}
-                >
-                  <button
-                    type="button"
-                    aria-haspopup="menu"
-                    aria-expanded={contactMenuOpen}
-                    onClick={() => setContactMenuOpen((prev) => !prev)}
-                    className="btn-secondary inline-flex items-center gap-2"
-                  >
-                    {t.contactMe}
-                    <ChevronDown size={16} />
-                  </button>
+              {/* Right: Project Card */}
+              <div className="flex flex-col gap-4">
+                <ProjectCard project={featuredProject} language={language} detailed={false} />
+              </div>
+            </div>
 
-                  {contactMenuOpen && (
-                    <div
-                      role="menu"
-                      className="absolute left-0 mt-2 w-56 rounded-xl border border-[var(--border)] bg-[var(--card)] z-30 p-2"
-                    >
-                      <a
-                        href={`mailto:${contact.email}`}
-                        role="menuitem"
-                        className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-[var(--text-primary)] hover:bg-[#f3f4f6]"
-                      >
-                        <Mail size={16} className="icon-primary" />
-                        {language === 'de' ? 'E-Mail senden' : 'Send Email'}
-                      </a>
-                      <a
-                        href={`tel:${contact.phone}`}
-                        role="menuitem"
-                        className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-[var(--text-primary)] hover:bg-[#f3f4f6]"
-                      >
-                        <Phone size={16} className="icon-primary" />
-                        {language === 'de' ? 'Anrufen' : 'Call'}
-                      </a>
-                      <a
-                        href={contact.github}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        role="menuitem"
-                        className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-[var(--text-primary)] hover:bg-[#f3f4f6]"
-                      >
-                        <Github size={16} className="icon-primary" />
-                        GitHub
-                      </a>
-                      <a
-                        href={contact.linkedin}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        role="menuitem"
-                        className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-[var(--text-primary)] hover:bg-[#f3f4f6]"
-                      >
-                        <Linkedin size={16} className="icon-primary" />
-                        LinkedIn
-                      </a>
+            {/* Link to Full Case Study */}
+            <div className="mt-12 pt-12 border-t border-[var(--border)]/30">
+              <a href="#/flokka-details" className="inline-flex items-center gap-2 text-[var(--primary)] hover:text-[var(--primary)]/80 transition-colors font-semibold">
+                {language === 'de' ? 'Vollständige Case Study ansehen' : 'View Full Case Study'} <ArrowUpRight size={16} />
+              </a>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* SKILLS SECTION */}
+      <section id="skills" className="py-32 bg-gradient-to-b from-white to-[var(--background)] relative border-b-2 border-[var(--border)]/30">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[var(--primary)]/5 rounded-full blur-3xl -mr-32 -mt-32"></div>
+        
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <p className="mono text-xs uppercase tracking-widest text-[var(--primary)] font-semibold mb-4">{language === 'de' ? 'Fähigkeiten' : 'ENGINEERING SKILLS'}</p>
+          <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-4">{t.skillsSection}</h2>
+          <p className="text-lg text-gray-600 mb-12">{t.skillsHelper}</p>
+
+          {/* Core Skills Cards */}
+          <div className="grid md:grid-cols-3 gap-4 mb-12">
+            {Object.entries(skills).map(([category, skillList]) => (
+              <div key={category} className="card bg-gradient-to-br from-[var(--primary)]/10 to-[var(--secondary)]/5 border border-[var(--primary)]/20 hover:border-[var(--primary)]/50 transition-all p-6">
+                <h3 className="text-sm font-bold text-[var(--primary)] uppercase tracking-wider mb-3">{category}</h3>
+                <div className="space-y-2">
+                  {skillList.slice(0, 3).map((skill) => (
+                    <div key={skill} className="flex items-center gap-2 text-sm text-gray-700">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[var(--primary)]"></span>
+                      {skill}
                     </div>
+                  ))}
+                  {skillList.length > 3 && (
+                    <div className="text-xs text-gray-500 pt-2">+{skillList.length - 3} more</div>
                   )}
                 </div>
+              </div>
+            ))}
+          </div>
+
+          {/* CTA to Skills Page */}
+          <a href="#/skills" className="inline-block">
+            <button className="btn-accent inline-flex items-center gap-2 hover:shadow-lg transition-all">
+              {t.exploreFull} <ArrowUpRight size={16} />
+            </button>
+          </a>
+        </div>
+      </section>
+
+      {/* PROJECTS SECTION */}
+      <section id="projects" className="py-32 bg-gradient-to-b from-white to-[var(--background)] relative border-b-2 border-[var(--border)]/30">
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-[var(--secondary)]/5 rounded-full blur-3xl -ml-32 -mb-32"></div>
+        
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <p className="mono text-xs uppercase tracking-widest text-[var(--primary)] font-semibold mb-4">{language === 'de' ? 'Weitere Systeme' : 'Other Systems'}</p>
+          <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-12">{t.otherProjects}</h2>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {otherProjects.map((project) => (
+              <div
+                key={project.id}
+                onClick={() => setSelectedProject(project)}
+                className="group cursor-pointer"
+              >
+                <div className="relative overflow-hidden rounded-xl transition-all duration-300 hover:shadow-2xl h-full">
+                  {/* Compact Immersive Card */}
+                  <div className="card bg-gradient-to-br from-white to-gray-50 h-full hover:from-[var(--primary)]/10 hover:to-[var(--secondary)]/5 transition-all border hover:border-[var(--primary)]/30 flex flex-col p-6">
+                    {/* Status badge */}
+                    <div className="flex items-start justify-between mb-3">
+                      <span className="inline-block px-2 py-1 bg-[var(--primary)]/10 text-[var(--primary)] text-xs font-bold rounded-full">
+                        {project.status}
+                      </span>
+                      <span className="text-xs text-gray-500">{project.year}</span>
+                    </div>
+
+                    {/* Title */}
+                    <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-[var(--primary)] transition-colors line-clamp-2">
+                      {project.title}
+                    </h3>
+
+                    {/* Category */}
+                    <p className="text-xs uppercase tracking-wider text-[var(--primary)] font-semibold mb-3">{project.category}</p>
+
+                    {/* Curious Detail - First line of description */}
+                    <p className="text-sm text-gray-600 mb-4 line-clamp-2 flex-grow">
+                      {project.description}
+                    </p>
+
+                    {/* Key Stat */}
+                    {project.impact && project.impact[0] && (
+                      <div className="mb-4 p-3 bg-white rounded-lg border border-[var(--primary)]/20 group-hover:border-[var(--primary)]/50 transition-colors">
+                        <p className="text-xs text-gray-500 mb-1">Highlight</p>
+                        <p className="text-sm font-bold text-[var(--primary)] truncate">
+                          {project.impact[0]}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Tech Stack Teaser */}
+                    <div className="flex flex-wrap gap-1 mb-4">
+                      {(project.techStack || []).slice(0, 4).map((tech) => (
+                        <span key={tech} className="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-700 group-hover:bg-[var(--primary)]/10 group-hover:text-[var(--primary)] transition-colors">
+                          {tech}
+                        </span>
+                      ))}
+                      {project.techStack && project.techStack.length > 4 && (
+                        <span className="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-700">+{project.techStack.length - 4}</span>
+                      )}
+                    </div>
+
+                    {/* View Details Button */}
+                    <button className="w-full py-2 px-3 rounded-lg border border-[var(--primary)]/30 text-[var(--primary)] text-sm font-semibold hover:bg-[var(--primary)]/10 transition-all group-hover:border-[var(--primary)]/60 flex items-center justify-center gap-2">
+                      View Details <ArrowUpRight size={14} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CAPABILITIES SECTION */}
+      <section id="capabilities" className="py-32 bg-gradient-to-b from-[var(--background)] to-white relative border-b-2 border-[var(--border)]/30">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[var(--primary)]/5 rounded-full blur-3xl -mr-32 -mt-32"></div>
+        
+        <div className="relative z-10">
+          <EngineeeringCapabilities language={language} />
+        </div>
+      </section>
+
+      {/* RESUME SECTION */}
+      <section id="resume" className="py-32 bg-white relative border-b-2 border-[var(--border)]/30">
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-[var(--secondary)]/5 rounded-full blur-3xl -ml-32 -mb-32"></div>
+        
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <p className="mono text-xs uppercase tracking-widest text-[var(--primary)] font-semibold mb-4">{language === 'de' ? 'Dokumentation' : 'DOCUMENTATION'}</p>
+          <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-4">{t.resumeSection}</h2>
+          <p className="text-lg text-gray-600 mb-16">{t.resumeHelper}</p>
+
+          {/* Compact Timeline View */}
+          <div className="space-y-4 mb-20">
+            {resumeDocuments.map((doc, idx) => (
+              <div key={doc.id} className="group relative overflow-hidden">
                 <a
-                  href={withBaseUrl(resumeDocuments[1].file)}
+                  href={withBaseUrl(doc.file)}
                   download
-                  className="btn-secondary inline-flex items-center gap-2"
+                  className="flex items-start gap-6 p-4 rounded-lg border-l-4 border-[var(--primary)] bg-gradient-to-r from-[var(--primary)]/5 to-transparent hover:from-[var(--primary)]/10 transition-all duration-300"
                 >
-                  <Download size={20} />
-                  {t.resume}
+                  {/* Timeline indicator */}
+                  <div className="flex flex-col items-center min-w-fit">
+                    <span className="inline-block px-2 py-1 bg-[var(--primary)] text-white text-xs font-bold rounded-full">{doc.badge}</span>
+                    <div className="w-1 h-8 bg-gradient-to-b from-[var(--primary)] to-transparent mt-2"></div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-[var(--primary)] mb-1 uppercase tracking-wide">{language === 'de' ? doc.useCaseDe : doc.useCase}</p>
+                    <h3 className="text-lg font-bold text-gray-900 mb-1 group-hover:text-[var(--primary)] transition-colors">
+                      {language === 'de' ? doc.labelDe : doc.label}
+                    </h3>
+                    <p className="text-sm text-gray-600 line-clamp-1">{language === 'de' ? doc.contextDe : doc.context}</p>
+                  </div>
+
+                  {/* Download icon */}
+                  <div className="flex-shrink-0 flex items-center justify-center">
+                    <Download size={20} className="text-[var(--primary)] group-hover:scale-125 transition-transform" />
+                  </div>
                 </a>
               </div>
+            ))}
+          </div>
+
+          <Certifications language={language} />
+        </div>
+      </section>
+
+      {/* CONTACT SECTION */}
+      <section id="contact" className="py-32 bg-gradient-to-br from-[var(--background)] to-white relative border-b-2 border-[var(--border)]/30">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[var(--primary)]/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
+        
+        <div className="relative z-10">
+          <Contact language={language} />
+        </div>
+      </section>
+
+      {/* Project Modal */}
+      {selectedProject && (
+        <div
+          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 overflow-y-auto"
+          onClick={() => setSelectedProject(null)}
+        >
+          <div
+            className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto my-8"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <ProjectDetailView project={selectedProject} language={language} onClose={() => setSelectedProject(null)} />
+          </div>
+        </div>
+      )}
+
+      {/* Footer */}
+      <footer className="bg-gradient-to-b from-gray-900 to-black text-white py-16 border-t border-gray-800">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-3 gap-12 mb-12">
+            <div>
+              <h3 className="text-2xl font-bold mb-2">{personalInfo.name}</h3>
+              <p className="text-gray-400 text-sm">{personalInfo.title}</p>
+              <p className="text-gray-500 text-sm mt-2">{personalInfo.location}</p>
+            </div>
+            
+            <div>
+              <p className="text-sm text-gray-400 mb-4">{language === 'de' ? 'Arbeitssprache' : 'Working Language'}</p>
+              <p className="text-white font-semibold">English • {language === 'de' ? 'Deutsch im Aufbau' : 'Learning German'}</p>
             </div>
 
-            <div className="card card-accent">
-              <p className="mono text-xs uppercase tracking-widest text-gray-500 mb-5">{t.performanceSnapshot}</p>
-              <div className="grid sm:grid-cols-2 gap-4">
-                {personalInfo.heroStats.map((item, index) => (
-                  <div key={item.label} className="card">
-                    <p className="mono text-xs text-gray-500 mb-1">{item.label}</p>
-                    <p className="text-2xl font-semibold text-gray-900">{formatStat(item, animatedStats[index])}</p>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-6 rounded-xl bg-[var(--secondary)] text-white p-6">
-                <p className="mono text-xs uppercase tracking-wider mb-2 text-gray-300">{t.currentlyBuilding}</p>
-                <ul className="space-y-2 text-sm">
-                  {localizedProfile.currentlyBuilding.map((item) => (
-                    <li key={item} className="flex items-start gap-2">
-                      <CheckCircle2 size={15} className="mt-0.5 icon-action" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+            <div className="flex items-center justify-start md:justify-end gap-6">
+              <a href={contact.github} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[var(--primary)] transition-colors duration-300 p-2 rounded-lg hover:bg-white/5">
+                <Github size={24} />
+              </a>
+              <a href={contact.linkedin} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[var(--primary)] transition-colors duration-300 p-2 rounded-lg hover:bg-white/5">
+                <Linkedin size={24} />
+              </a>
+              <a href={`mailto:${contact.email}`} className="text-gray-400 hover:text-[var(--primary)] transition-colors duration-300 p-2 rounded-lg hover:bg-white/5">
+                <Mail size={24} />
+              </a>
             </div>
           </div>
-        </div>
-      </section>
 
-      <section id="about" className="py-20 bg-[var(--background)] section-reveal">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="section-title">{t.about}</h2>
-          <div className="max-w-4xl mx-auto card">
-            <p className="text-lg text-gray-700 leading-relaxed">
-              {localizedProfile.about}
-            </p>
-            <div className="mt-6 pt-6 border-t border-stone-200">
-              <p className="text-sm text-gray-600">{t.euSignalOne}</p>
-              <p className="text-sm text-gray-600 mt-1">{t.workingLanguage}</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="focus" className="py-20 bg-[var(--background)] section-reveal" aria-labelledby="focus-heading">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 id="focus-heading" className="section-title">{t.focus}</h2>
-          <div className="max-w-4xl mx-auto flex flex-wrap gap-3 justify-center">
-            {engineeringFocus.map((item) => (
-              <span key={item} className="mono chip">
-                {item}
-              </span>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="principles" className="py-20 bg-[var(--background)] section-reveal" aria-labelledby="principles-heading">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 id="principles-heading" className="section-title">{t.principles}</h2>
-          <p className="section-subtitle">{t.principlesHelper}</p>
-          <div className="max-w-4xl mx-auto card">
-            <ul className="grid md:grid-cols-2 gap-3">
-              {engineeringPrinciples.map((item) => (
-                <li key={item} className="text-sm text-[var(--text-primary)] border border-[var(--border)] rounded-lg px-4 py-3 bg-[var(--card)]">
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <section id="resume" className="py-20 bg-[var(--background)] section-reveal" aria-labelledby="resume-heading">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 id="resume-heading" className="section-title">{t.resumeSection}</h2>
-          <p className="section-subtitle">{t.resumeHelper}</p>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            {resumeDocuments.map((doc) => (
-              <div key={doc.id} className="card overflow-hidden flex flex-col h-full">
-                <div className="px-6 pt-6 pb-3 bg-[var(--card)] border-b border-[var(--border)]">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="inline-block px-3 py-1 bg-[var(--primary)] text-white text-xs font-semibold rounded-full">
-                      {doc.badge}
-                    </span>
-                  </div>
-                  <p className="text-sm font-semibold text-[var(--primary)]">
-                    {language === 'de' ? doc.useCaseDe : doc.useCase}
-                  </p>
-                </div>
-
-                <div className="px-6 py-4 flex-grow">
-                  <p className="text-lg font-semibold text-gray-900 mb-2">
-                    {language === 'de' ? doc.labelDe : doc.label}
-                  </p>
-                  <p className="text-sm text-gray-600 mb-4 leading-relaxed">
-                    {language === 'de' ? doc.contextDe : doc.context}
-                  </p>
-                  <p className="text-xs text-gray-500 italic">
-                    {language === 'de' ? doc.noteDe : doc.note}
-                  </p>
-                </div>
-
-                <div className="px-6 pb-6 pt-4 border-t border-[var(--border)]">
-                  <a
-                    href={withBaseUrl(doc.file)}
-                    download
-                    className="w-full btn-secondary inline-flex items-center justify-center gap-2 text-sm"
-                  >
-                    <Download size={16} />
-                    {language === 'de' ? 'PDF Herunterladen' : 'Download PDF'}
-                  </a>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="py-20 bg-[var(--background)] section-reveal">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="section-title">{t.impact}</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
-            {localizedImpact.map((item) => (
-              <div key={item.id} className="card">
-                <p className="mono text-xs text-gray-500 uppercase tracking-widest mb-2">{item.title}</p>
-                <p className="text-2xl font-bold text-gray-900 mb-2">{item.metric}</p>
-                <p className="text-sm text-gray-600">{item.detail}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="py-20 bg-[var(--background)] section-reveal" aria-labelledby="reliability-heading">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 id="reliability-heading" className="section-title">{t.reliability}</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
-            {localizedReliability.map((item) => (
-              <article key={item.id} className="card">
-                <p className="mono text-xs uppercase tracking-widest text-gray-500 mb-2">{item.label}</p>
-                <p className="text-2xl font-bold text-gray-900 mb-2">{item.metric}</p>
-                <p className="text-sm text-gray-600">{item.detail}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <Education language={language} />
-      <Skills language={language} />
-
-      <section id="readiness" className="py-20 bg-[var(--secondary)] section-reveal" aria-labelledby="readiness-heading">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 id="readiness-heading" className="section-title text-white">{t.readiness}</h2>
-          <p className="section-subtitle text-gray-300">{t.readinessHelper}</p>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {engineeringReadiness.map((item) => (
-              <article key={item} className="rounded-xl border border-white/20 bg-white/5 p-6">
-                <p className="text-sm text-gray-100">{item}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="projects" className="py-20 bg-[var(--background)] section-reveal">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
-            <h2 className="section-title section-title-left mb-0">{t.caseStudies}</h2>
-            <p className="mono text-xs text-gray-500 uppercase tracking-widest">{t.filterHelper}</p>
+          {/* Compliance Sections - Much Better Visibility */}
+          <div className="border-t border-gray-800 pt-12 space-y-6">
+            <CollapsibleFooterSection
+              title={t.policy}
+              content={language === 'de'
+                ? 'Diese Website verarbeitet keine personenbezogenen Daten für Analysezwecke ohne Zustimmung. Externe Links zu GitHub und LinkedIn unterliegen den Datenschutzrichtlinien der jeweiligen Plattformen.'
+                : 'This website does not process personal analytics data without consent. External links to GitHub and LinkedIn are governed by the privacy policies of those platforms.'}
+              isOpen={privacyOpen}
+              onToggle={() => setPrivacyOpen(!privacyOpen)}
+            />
+            <CollapsibleFooterSection
+              title={t.legal}
+              content={language === 'de'
+                ? 'Inhaltlich verantwortlich: Aditya Sharma. Kontakt: aditya.828777@gmail.com. Diese Seite dient der beruflichen Darstellung von Projekten, Forschung und Engineering-Erfahrung.'
+                : 'Responsible for content: Aditya Sharma. Contact: aditya.828777@gmail.com. This website is intended for professional presentation of projects, research, and engineering experience.'}
+              isOpen={legalOpen}
+              onToggle={() => setLegalOpen(!legalOpen)}
+            />
           </div>
 
-          <div className="flex flex-wrap gap-2 mb-10">
-            {projectFilters.map((filter) => (
-              <button
-                key={filter}
-                onClick={() => setActiveFilter(filter)}
-                className={`mono text-xs px-3 py-2 rounded-full border ${
-                  activeFilter === filter
-                    ? 'bg-[var(--secondary)] text-white border-[var(--secondary)]'
-                    : 'bg-[var(--card)] text-[var(--text-primary)] border-[var(--secondary)] hover:bg-[#f3f4f6] hover:border-[var(--primary)]'
-                }`}
-              >
-                {getFilterLabel(filter)}
-              </button>
-            ))}
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            {filteredProjects.map((project) => (
-              <ProjectCard key={project.id} project={project} language={language} />
-            ))}
-          </div>
-          {filteredProjects.length === 0 && (
-            <p className="text-sm text-gray-500 mt-6">{t.noMatch}</p>
-          )}
-        </div>
-      </section>
-
-      <section className="py-20 bg-[var(--background)] section-reveal" aria-labelledby="credibility-heading">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 id="credibility-heading" className="section-title">{t.credibility}</h2>
-          <div className="grid md:grid-cols-3 gap-5">
-            {credibility.map((item) => (
-              <article key={item.id} className="card">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">{item.title}</h3>
-                <p className="text-sm text-gray-600">{item.detail}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <Certifications language={language} />
-      <Achievements language={language} />
-      <Contact language={language} />
-
-      <footer className="bg-gray-900 text-white py-8">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p>&copy; {new Date().getFullYear()} {personalInfo.name}. {t.rights}</p>
-          <div className="mt-3 flex items-center justify-center gap-6 text-sm">
-            <a href={`#${complianceLinks.privacyId}`} className="text-gray-300 hover:text-white">
-              {t.policy}
-            </a>
-            <a href={`#${complianceLinks.legalId}`} className="text-gray-300 hover:text-white">
-              {t.legal}
-            </a>
+          <div className="text-center mt-12 pt-8 border-t border-gray-800">
+            <p className="text-gray-500 text-sm">&copy; {new Date().getFullYear()} {personalInfo.name}. {t.rights}</p>
           </div>
         </div>
       </footer>
-
-      <section id={complianceLinks.privacyId} className="py-20 bg-[var(--background)] section-reveal" aria-labelledby="privacy-heading">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 id="privacy-heading" className="text-2xl font-semibold text-gray-900 mb-4">{t.policy}</h2>
-          <p className="text-gray-700 leading-relaxed">
-            {language === 'de'
-              ? 'Diese Website verarbeitet keine personenbezogenen Daten fuer Analysezwecke ohne Zustimmung. Externe Links zu GitHub und LinkedIn unterliegen den Datenschutzrichtlinien der jeweiligen Plattformen.'
-              : 'This website does not process personal analytics data without consent. External links to GitHub and LinkedIn are governed by the privacy policies of those platforms.'}
-          </p>
-        </div>
-      </section>
-
-      <section id={complianceLinks.legalId} className="py-20 bg-[var(--background)] section-reveal" aria-labelledby="legal-heading">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 id="legal-heading" className="text-2xl font-semibold text-gray-900 mb-4">{t.legal}</h2>
-          <p className="text-gray-700 leading-relaxed">
-            {language === 'de'
-              ? 'Inhaltlich verantwortlich: Aditya Sharma. Kontakt: aditya.828777@gmail.com. Diese Seite dient der beruflichen Darstellung von Projekten, Forschung und Engineering-Erfahrung.'
-              : 'Responsible for content: Aditya Sharma. Contact: aditya.828777@gmail.com. This website is intended for professional presentation of projects, research, and engineering experience.'}
-          </p>
-        </div>
-      </section>
+      </div>
     </div>
   );
 };

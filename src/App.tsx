@@ -1,17 +1,43 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
+import Projects from './pages/Projects';
+import FlokkaCaseStudyPage from './pages/FlokkaCaseStudyPage';
+import SkillsPage from './pages/SkillsPage';
 import ConsentBanner from './components/ConsentBanner';
+
+const getCurrentPage = () => {
+  const hash = window.location.hash;
+  if (hash === '#/projects') return 'projects';
+  if (hash === '#/flokka-details') return 'flokka-details';
+  if (hash === '#/skills') return 'skills';
+  return 'home';
+};
 
 function App() {
   const [language, setLanguage] = useState('en');
+  const [currentPage, setCurrentPage] = useState(getCurrentPage);
+
+  useEffect(() => {
+    const handleHashChange = () => setCurrentPage(getCurrentPage());
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
 
   return (
     <div className="min-h-screen">
       <a href="#main-content" className="skip-link">Skip to main content</a>
-      <Navbar language={language} setLanguage={setLanguage} />
+      <Navbar language={language} setLanguage={setLanguage} currentPage={currentPage} />
       <main id="main-content">
-        <Home language={language} setLanguage={setLanguage} />
+        {currentPage === 'projects' ? (
+          <Projects language={language} />
+        ) : currentPage === 'flokka-details' ? (
+          <FlokkaCaseStudyPage language={language} />
+        ) : currentPage === 'skills' ? (
+          <SkillsPage language={language} />
+        ) : (
+          <Home language={language} setLanguage={setLanguage} />
+        )}
       </main>
       <ConsentBanner language={language} />
     </div>

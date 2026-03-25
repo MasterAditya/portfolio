@@ -59,7 +59,7 @@ export const resumeDocuments = [
 ];
 
 export const about = {
-  description: "I am a Computer Science student specializing in backend engineering and AI systems. My focus is building dependable backend systems, asynchronous processing pipelines, and data systems designed for reliability." 
+  description: "I am an AI Backend Engineer focused on dependable backend systems, asynchronous processing pipelines, and data platforms built for reliability."
 };
 
 export const education = {
@@ -95,12 +95,9 @@ export const education = {
 };
 
 export const skills = {
-  "Programming": ["Python", "C++", "SQL"],
-  "Backend": ["FastAPI", "REST APIs", "AsyncIO"],
-  "Data": ["PostgreSQL", "Neo4j", "Redis"],
-  "Infrastructure": ["Docker", "Kubernetes", "CI/CD"],
-  "AI": ["Scikit-learn", "NLP pipelines"],
-  "Testing": ["Pytest", "Integration testing"]
+  "Core Stack": ["Python", "C++", "SQL", "FastAPI", "REST APIs", "AsyncIO", "PostgreSQL", "Neo4j", "Redis"],
+  "AI Systems": ["Scikit-learn", "NLP pipelines"],
+  "Engineering": ["Docker", "Kubernetes", "CI/CD", "Pytest", "Integration testing"]
 };
 
 export const projects = [
