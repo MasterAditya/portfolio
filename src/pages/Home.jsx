@@ -13,6 +13,7 @@ import Contact from '../components/Contact';
 import ProjectDetailView from '../components/ProjectDetailView';
 import EngineeeringCapabilities from '../components/EngineeeringCapabilities';
 import CollapsibleFooterSection from '../components/CollapsibleFooterSection';
+import HumanCheckModal from '../components/HumanCheckModal';
 
 const Home = ({ language }) => {
   const [selectedProject, setSelectedProject] = useState(null);
@@ -22,6 +23,7 @@ const Home = ({ language }) => {
   const [animatedStats, setAnimatedStats] = useState(() =>
     personalInfo.heroStats.map(() => 0)
   );
+  const [verificationRequest, setVerificationRequest] = useState(null);
   const contactMenuRef = useRef(null);
 
   // Handle click outside to close contact menu
@@ -130,6 +132,36 @@ const Home = ({ language }) => {
     return `${item.prefix ?? ''}${formattedValue}${item.suffix ?? ''}`;
   };
 
+  const requestPhoneAccess = () => {
+    setContactMenuOpen(false);
+    setVerificationRequest({ type: 'phone' });
+  };
+
+  const requestResumeDownload = (doc) => {
+    setVerificationRequest({ type: 'resume', doc });
+  };
+
+  const handleVerifiedAccess = () => {
+    if (!verificationRequest) {
+      return;
+    }
+
+    if (verificationRequest.type === 'phone') {
+      window.location.href = `tel:${contact.phone}`;
+      return;
+    }
+
+    if (verificationRequest.type === 'resume' && verificationRequest.doc) {
+      const filePath = withBaseUrl(verificationRequest.doc.file);
+      const link = document.createElement('a');
+      link.href = filePath;
+      link.setAttribute('download', '');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
+
   return (
     <div className="bg-white relative">
       {/* Subtle background pattern */}
@@ -202,10 +234,14 @@ const Home = ({ language }) => {
                           <Mail size={16} className="text-[var(--primary)]" />
                           Email
                         </a>
-                        <a href={`tel:${contact.phone}`} className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-900 hover:bg-[var(--primary)]/10 transition-colors">
+                        <button
+                          type="button"
+                          onClick={requestPhoneAccess}
+                          className="w-full text-left flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-900 hover:bg-[var(--primary)]/10 transition-colors"
+                        >
                           <Phone size={16} className="text-[var(--primary)]" />
                           Call
-                        </a>
+                        </button>
                         <a href={contact.github} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-900 hover:bg-[var(--primary)]/10 transition-colors">
                           <Github size={16} className="text-[var(--primary)]" />
                           GitHub
@@ -440,10 +476,10 @@ const Home = ({ language }) => {
           <div className="space-y-4 mb-20">
             {resumeDocuments.map((doc, idx) => (
               <div key={doc.id} className="group relative overflow-hidden">
-                <a
-                  href={withBaseUrl(doc.file)}
-                  download
-                  className="flex items-start gap-6 p-4 rounded-lg border-l-4 border-[var(--primary)] bg-gradient-to-r from-[var(--primary)]/5 to-transparent hover:from-[var(--primary)]/10 transition-all duration-300"
+                <button
+                  type="button"
+                  onClick={() => requestResumeDownload(doc)}
+                  className="w-full text-left flex items-start gap-6 p-4 rounded-lg border-l-4 border-[var(--primary)] bg-gradient-to-r from-[var(--primary)]/5 to-transparent hover:from-[var(--primary)]/10 transition-all duration-300"
                 >
                   {/* Timeline indicator */}
                   <div className="flex flex-col items-center min-w-fit">
@@ -464,7 +500,7 @@ const Home = ({ language }) => {
                   <div className="flex-shrink-0 flex items-center justify-center">
                     <Download size={20} className="text-[var(--primary)] group-hover:scale-125 transition-transform" />
                   </div>
-                </a>
+                </button>
               </div>
             ))}
           </div>
@@ -478,9 +514,20 @@ const Home = ({ language }) => {
         <div className="absolute top-0 right-0 w-96 h-96 bg-[var(--primary)]/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
         
         <div className="relative z-10">
-          <Contact language={language} />
+          <Contact language={language} onPhoneAction={requestPhoneAccess} />
         </div>
       </section>
+
+      <HumanCheckModal
+        open={Boolean(verificationRequest)}
+        onClose={() => setVerificationRequest(null)}
+        onVerified={handleVerifiedAccess}
+        actionKey={verificationRequest?.type === 'resume' ? 'resume-download' : 'phone-reveal'}
+        actionLabel={verificationRequest?.type === 'resume'
+          ? (language === 'de' ? 'Lebenslauf herunterladen' : 'Download resume')
+          : (language === 'de' ? 'Telefon anzeigen' : 'Reveal phone')}
+        language={language}
+      />
 
       {/* Project Modal */}
       {selectedProject && (

@@ -1,7 +1,7 @@
 import { contact } from '../data/portfolioData';
 import { Mail, Zap, Github, Linkedin } from 'lucide-react';
 
-const Contact = ({ language = 'en' }) => {
+const Contact = ({ language = 'en', onPhoneAction }) => {
   const t = {
     heading: language === 'de' ? 'Zusammenarbeit' : 'Work With Me',
     intro:
@@ -61,10 +61,11 @@ const Contact = ({ language = 'en' }) => {
             </div>
           </a>
 
-          <a
-            href={`tel:${contact.phone}`}
+          <button
+            type="button"
+            onClick={() => (onPhoneAction ? onPhoneAction() : (window.location.href = `tel:${contact.phone}`))}
             title="Call or WhatsApp"
-            className="card flex items-center gap-4 hover:shadow-md transition-shadow"
+            className="card w-full text-left flex items-center gap-4 hover:shadow-md transition-shadow"
           >
             <div className="bg-[var(--primary)]/5 p-3 rounded-lg border border-[var(--primary)]/10">
               <Zap className="icon-primary" size={20} />
@@ -74,7 +75,7 @@ const Contact = ({ language = 'en' }) => {
               <p className="text-gray-800 font-semibold">{t.availabilityStatus}</p>
               <p className="text-xs text-gray-600 mt-1">{t.availabilityDesc}</p>
             </div>
-          </a>
+          </button>
 
           <a
             href={contact.github}
