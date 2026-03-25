@@ -38,9 +38,8 @@ function App() {
       setTimeout(() => {
         const element = document.getElementById(targetSection);
         if (element) {
-          const offset = 64;
-          const elementPosition = element.getBoundingClientRect().top + window.scrollY - offset;
-          window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+          // Use native section alignment so scroll-margin-top applies consistently.
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       }, 80);
       return;
