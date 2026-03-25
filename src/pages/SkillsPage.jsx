@@ -60,18 +60,18 @@ const SkillsPage = ({ language }) => {
             <ArrowLeft size={18} />
             {t.backToPortfolio}
           </a>
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">{t.title}</h1>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-2">{t.title}</h1>
           <p className="text-lg text-gray-600">{t.subtitle}</p>
         </div>
       </div>
 
       {/* Skills Grid */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-14 lg:py-16">
         {/* Core Stack */}
         <div className="mb-16">
           <div className="mb-6">
             <span className="mono text-xs uppercase tracking-widest text-[var(--primary)] font-semibold">{t.focused}</span>
-            <h2 className="text-3xl font-bold text-gray-900 mt-2">{t.coreStack}</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">{t.coreStack}</h2>
             <p className="text-gray-600 mt-2">Primary languages and frameworks used in production systems</p>
           </div>
           <div className="grid md:grid-cols-3 gap-4">
@@ -91,7 +91,7 @@ const SkillsPage = ({ language }) => {
         <div className="mb-16">
           <div className="mb-6">
             <span className="mono text-xs uppercase tracking-widest text-[var(--primary)] font-semibold">{t.familiar}</span>
-            <h2 className="text-3xl font-bold text-gray-900 mt-2">{t.aiSystems}</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">{t.aiSystems}</h2>
             <p className="text-gray-600 mt-2">Machine learning frameworks and NLP pipelines</p>
           </div>
           <div className="grid md:grid-cols-2 gap-4">
@@ -111,7 +111,7 @@ const SkillsPage = ({ language }) => {
         <div className="mb-16">
           <div className="mb-6">
             <span className="mono text-xs uppercase tracking-widest text-[var(--primary)] font-semibold">{t.focused}</span>
-            <h2 className="text-3xl font-bold text-gray-900 mt-2">{t.engineering}</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">{t.engineering}</h2>
             <p className="text-gray-600 mt-2">DevOps, testing, and deployment infrastructure</p>
           </div>
           <div className="grid md:grid-cols-3 gap-4">
@@ -131,7 +131,7 @@ const SkillsPage = ({ language }) => {
         <div className="mb-16">
           <div className="mb-6">
             <span className="mono text-xs uppercase tracking-widest text-[var(--primary)] font-semibold">Best Practices</span>
-            <h2 className="text-3xl font-bold text-gray-900 mt-2">{t.practices}</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">{t.practices}</h2>
           </div>
           <div className="grid md:grid-cols-2 gap-6">
             {practicesData.map((practice) => (
@@ -156,7 +156,7 @@ const SkillsPage = ({ language }) => {
 
       {/* Footer CTA */}
       <div className="bg-gradient-to-t from-[var(--background)] to-white border-t border-[var(--border)]/30 mt-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-14 lg:py-16">
           <div className="text-center">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">
               {language === 'de' ? 'Interessiert an meinen Fähigkeiten?' : 'Interested in working together?'}

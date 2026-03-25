@@ -1,10 +1,38 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ShieldCheck, X } from 'lucide-react';
 
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const MAX_ATTEMPTS = 5;
 const RATE_KEY = 'portfolio-human-check-rate';
 const LOG_KEY = 'portfolio-human-check-log';
+const TURNSTILE_SCRIPT_ID = 'cf-turnstile-script';
+
+const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY || '';
+const TURNSTILE_VERIFY_URL = import.meta.env.VITE_TURNSTILE_VERIFY_URL || '/api/turnstile-verify';
+
+const loadTurnstileScript = () =>
+  new Promise((resolve, reject) => {
+    if (window.turnstile) {
+      resolve();
+      return;
+    }
+
+    const existing = document.getElementById(TURNSTILE_SCRIPT_ID);
+    if (existing) {
+      existing.addEventListener('load', () => resolve(), { once: true });
+      existing.addEventListener('error', () => reject(new Error('Script load failed')), { once: true });
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.id = TURNSTILE_SCRIPT_ID;
+    script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+    script.async = true;
+    script.defer = true;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error('Script load failed'));
+    document.head.appendChild(script);
+  });
 
 const readRateStore = () => {
   try {
@@ -74,10 +102,16 @@ const HumanCheckModal = ({
   actionLabel,
   language = 'en',
 }) => {
+  const [useTurnstile, setUseTurnstile] = useState(Boolean(TURNSTILE_SITE_KEY));
   const [numA, setNumA] = useState(0);
   const [numB, setNumB] = useState(0);
   const [answer, setAnswer] = useState('');
+  const [token, setToken] = useState('');
+  const [widgetReady, setWidgetReady] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
   const [error, setError] = useState('');
+  const widgetHostRef = useRef(null);
+  const widgetIdRef = useRef(null);
 
   const t = useMemo(() => {
     const isDe = language === 'de';
@@ -89,7 +123,13 @@ const HumanCheckModal = ({
       placeholder: isDe ? 'Antwort eingeben' : 'Enter answer',
       cancel: isDe ? 'Abbrechen' : 'Cancel',
       continue: isDe ? 'Fortfahren' : 'Continue',
+      turnstileLoading: isDe ? 'Sicherheitspruefung wird geladen...' : 'Loading security verification...',
+      turnstileRequired: isDe
+        ? 'Bitte die Sicherheitspruefung zuerst abschliessen.'
+        : 'Please complete the security verification first.',
       invalid: isDe ? 'Antwort ist nicht korrekt. Bitte erneut versuchen.' : 'Incorrect answer. Please try again.',
+      verifyFailed: isDe ? 'Verifizierung fehlgeschlagen. Bitte erneut versuchen.' : 'Verification failed. Please try again.',
+      fallbackHint: isDe ? 'Fallback-Herausforderung' : 'Fallback challenge',
       lockedPrefix: isDe ? 'Zu viele Versuche. Bitte in' : 'Too many attempts. Please retry in',
       lockedSuffix: isDe ? 'Minuten.' : 'minutes.',
     };
@@ -100,11 +140,59 @@ const HumanCheckModal = ({
       return;
     }
 
+    setUseTurnstile(Boolean(TURNSTILE_SITE_KEY));
     setNumA(Math.floor(Math.random() * 8) + 2);
     setNumB(Math.floor(Math.random() * 8) + 2);
     setAnswer('');
+    setToken('');
+    setWidgetReady(false);
+    setIsVerifying(false);
     setError('');
   }, [open, actionKey]);
+
+  useEffect(() => {
+    if (!open || !useTurnstile || !widgetHostRef.current) {
+      return;
+    }
+
+    let isMounted = true;
+
+    loadTurnstileScript()
+      .then(() => {
+        if (!isMounted || !window.turnstile || !widgetHostRef.current) {
+          return;
+        }
+
+        widgetHostRef.current.innerHTML = '';
+        widgetIdRef.current = window.turnstile.render(widgetHostRef.current, {
+          sitekey: TURNSTILE_SITE_KEY,
+          action: actionKey,
+          callback: (nextToken) => {
+            setToken(nextToken || '');
+            setError('');
+          },
+          'expired-callback': () => setToken(''),
+          'error-callback': () => {
+            setToken('');
+            setError(t.verifyFailed);
+          },
+          theme: 'light',
+        });
+
+        setWidgetReady(true);
+      })
+      .catch(() => {
+        setUseTurnstile(false);
+      });
+
+    return () => {
+      isMounted = false;
+      if (window.turnstile && widgetIdRef.current !== null) {
+        window.turnstile.remove(widgetIdRef.current);
+        widgetIdRef.current = null;
+      }
+    };
+  }, [open, useTurnstile, actionKey, t.verifyFailed]);
 
   useEffect(() => {
     if (!open) {
@@ -131,6 +219,54 @@ const HumanCheckModal = ({
   const handleSubmit = () => {
     if (isLocked) {
       setError(`${t.lockedPrefix} ${formatLockMinutes(lockMs)} ${t.lockedSuffix}`);
+      return;
+    }
+
+    if (useTurnstile) {
+      if (!token) {
+        setError(t.turnstileRequired);
+        return;
+      }
+
+      setIsVerifying(true);
+      fetch(TURNSTILE_VERIFY_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token,
+          action: actionKey,
+        }),
+      })
+        .then(async (response) => {
+          const payload = await response.json().catch(() => ({}));
+          if (!response.ok || !payload?.success) {
+            throw new Error(payload?.error || 'Verification failed');
+          }
+
+          logAttempt(actionKey, true);
+          onVerified();
+          onClose();
+        })
+        .catch(() => {
+          const attemptCount = registerFailedAttempt(actionKey);
+          logAttempt(actionKey, false);
+          if (attemptCount >= MAX_ATTEMPTS) {
+            const nextLockMs = getRemainingLockMs(actionKey);
+            setError(`${t.lockedPrefix} ${formatLockMinutes(nextLockMs)} ${t.lockedSuffix}`);
+          } else {
+            setError(t.verifyFailed);
+          }
+
+          if (window.turnstile && widgetIdRef.current !== null) {
+            window.turnstile.reset(widgetIdRef.current);
+          }
+          setToken('');
+        })
+        .finally(() => {
+          setIsVerifying(false);
+        });
       return;
     }
 
@@ -173,24 +309,38 @@ const HumanCheckModal = ({
 
         <p className="text-sm text-gray-600 mb-5">{t.subtitle}</p>
 
-        <div className="rounded-xl bg-[var(--background)] border border-[var(--border)] p-4 mb-4">
-          <p className="mono text-xs uppercase tracking-wider text-gray-500 mb-2">Security Check</p>
-          <p className="text-xl font-semibold text-gray-900">{numA} + {numB} = ?</p>
-        </div>
+        {useTurnstile ? (
+          <div className="rounded-xl bg-[var(--background)] border border-[var(--border)] p-4 mb-4">
+            <p className="mono text-xs uppercase tracking-wider text-gray-500 mb-3">Turnstile Verification</p>
+            {!widgetReady && (
+              <p className="text-sm text-gray-600 mb-3">{t.turnstileLoading}</p>
+            )}
+            <div ref={widgetHostRef} className="min-h-[70px]" />
+          </div>
+        ) : (
+          <>
+            <div className="rounded-xl bg-[var(--background)] border border-[var(--border)] p-4 mb-4">
+              <p className="mono text-xs uppercase tracking-wider text-gray-500 mb-2">{t.fallbackHint}</p>
+              <p className="text-xl font-semibold text-gray-900">{numA} + {numB} = ?</p>
+            </div>
 
-        <input
-          type="number"
-          value={answer}
-          onChange={(event) => setAnswer(event.target.value)}
-          placeholder={t.placeholder}
-          className="w-full rounded-lg border border-[var(--border)] px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/30"
-        />
+            <input
+              type="number"
+              value={answer}
+              onChange={(event) => setAnswer(event.target.value)}
+              placeholder={t.placeholder}
+              className="w-full rounded-lg border border-[var(--border)] px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/30"
+            />
+          </>
+        )}
 
         {error && <p className="text-sm text-red-600 mt-3">{error}</p>}
 
         <div className="flex items-center justify-end gap-2 mt-6">
           <button type="button" onClick={onClose} className="btn-secondary">{t.cancel}</button>
-          <button type="button" onClick={handleSubmit} className="btn-accent">{t.continue}</button>
+          <button type="button" onClick={handleSubmit} disabled={isVerifying} className="btn-accent disabled:opacity-60 disabled:cursor-not-allowed">
+            {isVerifying ? 'Verifying...' : t.continue}
+          </button>
         </div>
       </div>
     </div>

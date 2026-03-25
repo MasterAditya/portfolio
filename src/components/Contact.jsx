@@ -29,7 +29,7 @@ const Contact = ({ language = 'en', onPhoneAction }) => {
   };
 
   return (
-    <section id="contact" className="py-32 bg-gradient-to-b from-[var(--background)] via-white to-[var(--background)] section-reveal border-t-2 border-[var(--border)]">
+    <section id="contact" className="py-20 sm:py-24 lg:py-32 bg-gradient-to-b from-[var(--background)] via-white to-[var(--background)] section-reveal border-t-2 border-[var(--border)]">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <p className="mono text-xs uppercase tracking-widest text-[var(--primary)] font-semibold mb-3 text-center">Get In Touch</p>
         <h2 className="section-title mb-3">{t.heading}</h2>

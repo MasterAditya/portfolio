@@ -176,9 +176,9 @@ const Home = ({ language }) => {
           <div className="absolute bottom-0 left-0 w-96 h-96 bg-[var(--secondary)]/10 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
         </div>
 
-        <div className="relative pt-32 pb-24">
+        <div className="relative pt-24 sm:pt-28 lg:pt-32 pb-16 sm:pb-20 lg:pb-24">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid lg:grid-cols-[1.2fr_0.8fr] gap-12 items-center min-h-[600px]">
+            <div className="grid lg:grid-cols-[1.2fr_0.8fr] gap-8 lg:gap-12 items-center min-h-[560px] lg:min-h-[600px]">
               <div className="max-w-3xl space-y-6">
                 <p className="mono text-xs uppercase tracking-[0.2em] text-[var(--primary)] mb-4 animate-fadeIn">{t.portfolioLabel}</p>
                 
@@ -192,7 +192,7 @@ const Home = ({ language }) => {
                     className="rounded-2xl w-20 h-20 md:w-24 md:h-24 object-cover ring-2 ring-[var(--border)] group-hover:ring-[var(--primary)] transition-all duration-300 transform group-hover:scale-105"
                   />
                   <div>
-                    <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">{personalInfo.name}</h1>
+                    <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 leading-tight">{personalInfo.name}</h1>
                     <p className="text-sm text-[var(--primary)] mono mt-2 font-semibold">{personalInfo.location}</p>
                   </div>
                 </div>
@@ -279,7 +279,7 @@ const Home = ({ language }) => {
 
       {/* FEATURED SECTION */}
       {featuredProject && (
-        <section id="featured" className="py-32 bg-gradient-to-b from-white via-[var(--background)] to-white relative overflow-hidden border-b-2 border-[var(--border)]/30">
+        <section id="featured" className="py-20 sm:py-24 lg:py-32 bg-gradient-to-b from-white via-[var(--background)] to-white relative overflow-hidden border-b-2 border-[var(--border)]/30">
           {/* Decorative elements */}
           <div className="absolute top-0 right-0 w-96 h-96 bg-[var(--primary)]/5 rounded-full blur-3xl -mr-32 -mt-32"></div>
           
@@ -289,7 +289,7 @@ const Home = ({ language }) => {
             <div className="grid lg:grid-cols-2 gap-12 items-start">
               {/* Left: Curious details & teaser */}
               <div className="space-y-6">
-                <h2 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight">{featuredProject.title}</h2>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">{featuredProject.title}</h2>
                 
                 {/* Curiosity-raising stats */}
                 <div className="grid grid-cols-2 gap-4">
@@ -344,12 +344,12 @@ const Home = ({ language }) => {
       )}
 
       {/* SKILLS SECTION */}
-      <section id="skills" className="py-32 bg-gradient-to-b from-white to-[var(--background)] relative border-b-2 border-[var(--border)]/30">
+      <section id="skills" className="py-20 sm:py-24 lg:py-32 bg-gradient-to-b from-white to-[var(--background)] relative border-b-2 border-[var(--border)]/30">
         <div className="absolute top-0 right-0 w-96 h-96 bg-[var(--primary)]/5 rounded-full blur-3xl -mr-32 -mt-32"></div>
         
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <p className="mono text-xs uppercase tracking-widest text-[var(--primary)] font-semibold mb-4">{language === 'de' ? 'Fähigkeiten' : 'ENGINEERING SKILLS'}</p>
-          <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-4">{t.skillsSection}</h2>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4">{t.skillsSection}</h2>
           <p className="text-lg text-gray-600 mb-12">{t.skillsHelper}</p>
 
           {/* Core Skills Cards */}
@@ -382,12 +382,12 @@ const Home = ({ language }) => {
       </section>
 
       {/* PROJECTS SECTION */}
-      <section id="projects" className="py-32 bg-gradient-to-b from-white to-[var(--background)] relative border-b-2 border-[var(--border)]/30">
+      <section id="projects" className="py-20 sm:py-24 lg:py-32 bg-gradient-to-b from-white to-[var(--background)] relative border-b-2 border-[var(--border)]/30">
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-[var(--secondary)]/5 rounded-full blur-3xl -ml-32 -mb-32"></div>
         
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <p className="mono text-xs uppercase tracking-widest text-[var(--primary)] font-semibold mb-4">{language === 'de' ? 'Weitere Systeme' : 'Other Systems'}</p>
-          <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-12">{t.otherProjects}</h2>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-10 sm:mb-12">{t.otherProjects}</h2>
 
           <div className="grid md:grid-cols-2 gap-6">
             {otherProjects.map((project) => (
@@ -455,7 +455,7 @@ const Home = ({ language }) => {
       </section>
 
       {/* CAPABILITIES SECTION */}
-      <section id="capabilities" className="py-32 bg-gradient-to-b from-[var(--background)] to-white relative border-b-2 border-[var(--border)]/30">
+      <section id="capabilities" className="py-20 sm:py-24 lg:py-32 bg-gradient-to-b from-[var(--background)] to-white relative border-b-2 border-[var(--border)]/30">
         <div className="absolute top-0 right-0 w-96 h-96 bg-[var(--primary)]/5 rounded-full blur-3xl -mr-32 -mt-32"></div>
         
         <div className="relative z-10">
@@ -464,12 +464,12 @@ const Home = ({ language }) => {
       </section>
 
       {/* RESUME SECTION */}
-      <section id="resume" className="py-32 bg-white relative border-b-2 border-[var(--border)]/30">
+      <section id="resume" className="py-20 sm:py-24 lg:py-32 bg-white relative border-b-2 border-[var(--border)]/30">
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-[var(--secondary)]/5 rounded-full blur-3xl -ml-32 -mb-32"></div>
         
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <p className="mono text-xs uppercase tracking-widest text-[var(--primary)] font-semibold mb-4">{language === 'de' ? 'Dokumentation' : 'DOCUMENTATION'}</p>
-          <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-4">{t.resumeSection}</h2>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4">{t.resumeSection}</h2>
           <p className="text-lg text-gray-600 mb-16">{t.resumeHelper}</p>
 
           {/* Compact Timeline View */}
@@ -510,7 +510,7 @@ const Home = ({ language }) => {
       </section>
 
       {/* CONTACT SECTION */}
-      <section id="contact" className="py-32 bg-gradient-to-br from-[var(--background)] to-white relative border-b-2 border-[var(--border)]/30">
+      <section id="contact" className="py-20 sm:py-24 lg:py-32 bg-gradient-to-br from-[var(--background)] to-white relative border-b-2 border-[var(--border)]/30">
         <div className="absolute top-0 right-0 w-96 h-96 bg-[var(--primary)]/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
         
         <div className="relative z-10">
