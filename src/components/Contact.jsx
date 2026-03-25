@@ -47,10 +47,10 @@ const Contact = ({ language = 'en', onPhoneAction }) => {
           <p className="mt-4 text-sm text-gray-600 font-medium">{t.support}</p>
         </div>
 
-        <div className="max-w-3xl mx-auto grid md:grid-cols-2 gap-6">
+        <div className="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
           <a
             href={`mailto:${contact.email}`}
-            className="card flex items-center gap-4 hover:shadow-md transition-shadow"
+            className="card flex flex-col sm:flex-row sm:items-center gap-4 hover:shadow-md transition-shadow"
           >
             <div className="bg-[var(--primary)]/5 p-3 rounded-lg border border-[var(--primary)]/10">
               <Mail className="icon-primary" size={20} />
@@ -65,7 +65,7 @@ const Contact = ({ language = 'en', onPhoneAction }) => {
             type="button"
             onClick={() => (onPhoneAction ? onPhoneAction() : (window.location.href = `tel:${contact.phone}`))}
             title="Call or WhatsApp"
-            className="card w-full text-left flex items-center gap-4 hover:shadow-md transition-shadow"
+            className="card w-full text-left flex flex-col sm:flex-row sm:items-center gap-4 hover:shadow-md transition-shadow"
           >
             <div className="bg-[var(--primary)]/5 p-3 rounded-lg border border-[var(--primary)]/10">
               <Zap className="icon-primary" size={20} />
@@ -81,7 +81,7 @@ const Contact = ({ language = 'en', onPhoneAction }) => {
             href={contact.github}
             target="_blank"
             rel="noopener noreferrer"
-            className="card flex items-center gap-4 hover:shadow-md transition-shadow"
+            className="card flex flex-col sm:flex-row sm:items-center gap-4 hover:shadow-md transition-shadow"
           >
             <div className="bg-[var(--primary)]/5 p-3 rounded-lg border border-[var(--primary)]/10">
               <Github className="icon-primary" size={20} />
@@ -96,7 +96,7 @@ const Contact = ({ language = 'en', onPhoneAction }) => {
             href={contact.linkedin}
             target="_blank"
             rel="noopener noreferrer"
-            className="card flex items-center gap-4 hover:shadow-md transition-shadow"
+            className="card flex flex-col sm:flex-row sm:items-center gap-4 hover:shadow-md transition-shadow"
           >
             <div className="bg-[var(--primary)]/5 p-3 rounded-lg border border-[var(--primary)]/10">
               <Linkedin className="icon-primary" size={20} />

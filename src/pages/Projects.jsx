@@ -72,7 +72,7 @@ const Projects = ({ language }) => {
       {!viewFlokkaDetail && (
         <section id="projects-page" className="py-20 bg-[var(--background)] section-reveal">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
               <h1 className="section-title section-title-left mb-0">{t.title}</h1>
               <p className="mono text-xs text-gray-500 uppercase tracking-widest">{t.filterHelper}</p>
             </div>
@@ -111,7 +111,7 @@ const Projects = ({ language }) => {
             </div>
 
             {/* Projects Grid */}
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {filteredProjects.filter(p => p.id !== 2).map((project) => (
                 <ProjectCard key={project.id} project={project} language={language} detailed />
               ))}

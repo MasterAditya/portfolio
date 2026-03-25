@@ -178,11 +178,11 @@ const Home = ({ language }) => {
 
         <div className="relative pt-24 sm:pt-28 lg:pt-32 pb-16 sm:pb-20 lg:pb-24">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid lg:grid-cols-[1.2fr_0.8fr] gap-8 lg:gap-12 items-center min-h-[560px] lg:min-h-[600px]">
+            <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-8 lg:gap-12 items-center min-h-[560px] lg:min-h-[600px]">
               <div className="max-w-3xl space-y-6">
                 <p className="mono text-xs uppercase tracking-[0.2em] text-[var(--primary)] mb-4 animate-fadeIn">{t.portfolioLabel}</p>
                 
-                <div className="flex items-center gap-4 mb-8 group">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-8 group text-center sm:text-left">
                   <img
                     src={`${import.meta.env.BASE_URL}My Image.jpg`}
                     alt={`Portrait of ${personalInfo.name}`}
@@ -198,10 +198,10 @@ const Home = ({ language }) => {
                 </div>
 
                 <div className="space-y-4">
-                  <p className="text-2xl md:text-3xl text-gray-900 font-semibold">
+                  <p className="text-xl sm:text-2xl md:text-3xl text-gray-900 font-semibold">
                     Backend Engineer • AI Systems
                   </p>
-                  <p className="text-lg text-gray-700 leading-relaxed">
+                  <p className="text-base sm:text-lg text-gray-700 leading-relaxed">
                     {language === 'de'
                       ? 'Ich entwickle skalierbare Backend-Systeme mit Fokus auf Dokumentenverarbeitung, KI-Pipelines und zuverlässige APIs. Spezialisiert auf asynchrone Architekturen, Hybrid-ML und Production-Ready Code.'
                       : 'Building reliable backend systems for document processing, AI pipelines, and scalable APIs. Specialized in async architectures, hybrid ML, and production-grade infrastructure.'}
@@ -214,7 +214,7 @@ const Home = ({ language }) => {
                   ))}
                 </div>
 
-                <div className="flex flex-wrap gap-3 pt-4">
+                <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 pt-4">
                   <a href="#featured" className="btn-accent inline-flex items-center gap-2 hover:shadow-lg transition-all">
                     {t.viewProjects} <ArrowUpRight size={18} />
                   </a>
@@ -261,7 +261,7 @@ const Home = ({ language }) => {
               {/* Stats Card with Glassmorphism */}
               <div className="card card-accent border border-white/20 backdrop-blur-xl bg-white/80 hover:bg-white/90 transition-all">
                 <p className="mono text-xs uppercase tracking-widest text-gray-500 mb-6 font-semibold">{t.performanceSnapshot}</p>
-                <div className="grid sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {personalInfo.heroStats.map((item, index) => (
                     <div key={item.label} className="card bg-gradient-to-br from-white to-gray-50 hover:from-[var(--primary)]/5 hover:to-[var(--secondary)]/5 transition-all">
                       <p className="mono text-xs text-gray-500 font-semibold uppercase mb-2">{item.label}</p>
@@ -286,13 +286,13 @@ const Home = ({ language }) => {
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <p className="mono text-xs uppercase tracking-widest text-[var(--primary)] font-semibold mb-4 animate-fadeIn">{language === 'de' ? 'Flaggschiff-System' : 'FLAGSHIP SYSTEM'}</p>
             
-            <div className="grid lg:grid-cols-2 gap-12 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
               {/* Left: Curious details & teaser */}
               <div className="space-y-6">
                 <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">{featuredProject.title}</h2>
                 
                 {/* Curiosity-raising stats */}
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {featuredProject.impact?.slice(0, 4).map((item, idx) => (
                     <div key={idx} className="card bg-gradient-to-br from-[var(--primary)]/10 to-[var(--secondary)]/5 hover:from-[var(--primary)]/20 hover:to-[var(--secondary)]/10 transition-all border border-[var(--primary)]/20">
                       <p className="text-2xl font-bold bg-gradient-to-r from-[var(--primary)] to-[var(--secondary)] bg-clip-text text-transparent">
@@ -311,7 +311,7 @@ const Home = ({ language }) => {
                   ))}
                 </div>
 
-                <div className="flex gap-3 flex-wrap pt-4">
+                <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 pt-4">
                   <a
                     href={featuredProject.github}
                     target="_blank"
@@ -353,7 +353,7 @@ const Home = ({ language }) => {
           <p className="text-lg text-gray-600 mb-12">{t.skillsHelper}</p>
 
           {/* Core Skills Cards */}
-          <div className="grid md:grid-cols-3 gap-4 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
             {Object.entries(skills).map(([category, skillList]) => (
               <div key={category} className="card bg-gradient-to-br from-[var(--primary)]/10 to-[var(--secondary)]/5 border border-[var(--primary)]/20 hover:border-[var(--primary)]/50 transition-all p-6">
                 <h3 className="text-sm font-bold text-[var(--primary)] uppercase tracking-wider mb-3">{category}</h3>
@@ -389,7 +389,7 @@ const Home = ({ language }) => {
           <p className="mono text-xs uppercase tracking-widest text-[var(--primary)] font-semibold mb-4">{language === 'de' ? 'Weitere Systeme' : 'Other Systems'}</p>
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-10 sm:mb-12">{t.otherProjects}</h2>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {otherProjects.map((project) => (
               <div
                 key={project.id}
@@ -479,7 +479,7 @@ const Home = ({ language }) => {
                 <button
                   type="button"
                   onClick={() => requestResumeDownload(doc)}
-                  className="w-full text-left flex items-start gap-6 p-4 rounded-lg border-l-4 border-[var(--primary)] bg-gradient-to-r from-[var(--primary)]/5 to-transparent hover:from-[var(--primary)]/10 transition-all duration-300"
+                  className="w-full text-left flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-6 p-4 rounded-lg border-l-4 border-[var(--primary)] bg-gradient-to-r from-[var(--primary)]/5 to-transparent hover:from-[var(--primary)]/10 transition-all duration-300"
                 >
                   {/* Timeline indicator */}
                   <div className="flex flex-col items-center min-w-fit">
@@ -547,7 +547,7 @@ const Home = ({ language }) => {
       {/* Footer */}
       <footer className="bg-gradient-to-b from-gray-900 to-black text-white py-16 border-t border-gray-800">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-3 gap-12 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
             <div>
               <h3 className="text-2xl font-bold mb-2">{personalInfo.name}</h3>
               <p className="text-gray-400 text-sm">{personalInfo.title}</p>
@@ -559,7 +559,7 @@ const Home = ({ language }) => {
               <p className="text-white font-semibold">English • {language === 'de' ? 'Deutsch im Aufbau' : 'Learning German'}</p>
             </div>
 
-            <div className="flex items-center justify-start md:justify-end gap-6">
+            <div className="flex items-center justify-center md:justify-end gap-6">
               <a href={contact.github} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[var(--primary)] transition-colors duration-300 p-2 rounded-lg hover:bg-white/5">
                 <Github size={24} />
               </a>

@@ -26,6 +26,7 @@
 
 html {
 	scroll-behavior: auto;
+	overflow-x: hidden;
 }
 
 body {
@@ -34,6 +35,15 @@ body {
 	color: var(--text-primary);
 	background: radial-gradient(circle at 12% 10%, #fff7f7 0%, var(--background) 45%, #f4eff0 100%);
 	position: relative;
+	overflow-x: hidden;
+}
+
+img,
+video,
+canvas,
+svg,
+iframe {
+	max-width: 100%;
 }
 
 body::before {

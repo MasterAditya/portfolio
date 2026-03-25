@@ -36,14 +36,14 @@ const ProjectDetailView = ({ project, language, onClose }) => {
   };
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 md:p-8">
       {/* Header */}
-      <div className="flex items-start justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
         <div className="flex-1">
           <p className="mono text-xs uppercase tracking-widest text-[var(--primary)] font-semibold mb-2">
             {t.status}: {project.status || 'Active'}
           </p>
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">{project.title}</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 break-words">{project.title}</h2>
           {project.category && (
             <p className="text-sm text-gray-600 mono">{project.category}</p>
           )}
@@ -65,7 +65,7 @@ const ProjectDetailView = ({ project, language, onClose }) => {
       )}
 
       {/* Main Content Grid */}
-      <div className="grid md:grid-cols-2 gap-8 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
         {/* Left Column */}
         <div>
           {renderSection(t.problem, project.problem)}

@@ -91,7 +91,7 @@ const ProjectCard = ({ project, language = 'en', detailed = true }) => {
 
   return (
     <div className="card card-accent">
-      <div className="flex justify-between items-start mb-3">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-3">
         <div>
           <p className="mono text-xs uppercase tracking-wider text-[var(--text-secondary)] mb-2">{project.category || t.aiProject}</p>
           <h3 className="text-xl font-semibold text-[var(--text-primary)]">{project.title}</h3>
@@ -304,12 +304,12 @@ const ProjectCard = ({ project, language = 'en', detailed = true }) => {
         </div>
       )}
 
-      <div className="flex gap-3">
+      <div className="flex flex-col sm:flex-row gap-3">
         <a
           href={project.github}
           target="_blank"
           rel="noopener noreferrer"
-          className="btn-secondary inline-flex items-center gap-2 text-sm"
+          className="btn-secondary inline-flex items-center justify-center gap-2 text-sm"
         >
           <Github size={16} className="icon-primary" />
           {t.github}
@@ -319,7 +319,7 @@ const ProjectCard = ({ project, language = 'en', detailed = true }) => {
             href={project.demo}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-secondary inline-flex items-center gap-2 text-sm"
+            className="btn-secondary inline-flex items-center justify-center gap-2 text-sm"
           >
             <ExternalLink size={16} className="icon-primary" />
             {t.demo}

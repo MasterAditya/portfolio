@@ -11,7 +11,7 @@ const Certifications = ({ language = 'en' }) => {
         <p className="mono text-xs uppercase tracking-widest text-[var(--primary)] font-semibold mb-3">Professional Development</p>
         <h2 className="section-title mb-8">{heading}</h2>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {certifications.map((cert) => (
             <div key={cert.id} className="card hover:shadow-md transition-shadow">
               <div className="flex items-start gap-3">

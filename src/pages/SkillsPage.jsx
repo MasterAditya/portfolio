@@ -74,7 +74,7 @@ const SkillsPage = ({ language }) => {
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">{t.coreStack}</h2>
             <p className="text-gray-600 mt-2">Primary languages and frameworks used in production systems</p>
           </div>
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {skills["Core Stack"].map((skill) => (
               <div
                 key={skill}
@@ -94,7 +94,7 @@ const SkillsPage = ({ language }) => {
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">{t.aiSystems}</h2>
             <p className="text-gray-600 mt-2">Machine learning frameworks and NLP pipelines</p>
           </div>
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {skills["AI Systems"].map((skill) => (
               <div
                 key={skill}
@@ -114,7 +114,7 @@ const SkillsPage = ({ language }) => {
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">{t.engineering}</h2>
             <p className="text-gray-600 mt-2">DevOps, testing, and deployment infrastructure</p>
           </div>
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {skills["Engineering"].map((skill) => (
               <div
                 key={skill}
@@ -133,7 +133,7 @@ const SkillsPage = ({ language }) => {
             <span className="mono text-xs uppercase tracking-widest text-[var(--primary)] font-semibold">Best Practices</span>
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">{t.practices}</h2>
           </div>
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {practicesData.map((practice) => (
               <div
                 key={practice.label}
