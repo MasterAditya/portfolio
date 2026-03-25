@@ -5,6 +5,7 @@ import Projects from './pages/Projects';
 import FlokkaCaseStudyPage from './pages/FlokkaCaseStudyPage';
 import SkillsPage from './pages/SkillsPage';
 import ConsentBanner from './components/ConsentBanner';
+import BackToTopButton from './components/BackToTopButton';
 
 const SCROLL_TARGET_KEY = 'portfolio:scrollTarget';
 
@@ -62,6 +63,7 @@ function App() {
           <Home language={language} setLanguage={setLanguage} />
         )}
       </main>
+      <BackToTopButton />
       <ConsentBanner language={language} />
     </div>
   );
