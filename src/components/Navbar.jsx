@@ -81,12 +81,12 @@ const Navbar = ({ language, setLanguage, currentPage = 'home' }) => {
 
   return (
     <nav className="fixed top-0 w-full bg-[var(--card)] border-b border-[var(--border)] z-50 backdrop-blur-sm bg-opacity-95">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+      <div className="max-w-6xl mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-14 sm:h-16">
           {/* Brand */}
           <button 
             onClick={() => scrollToSection('home')}
-            className="text-lg font-bold text-gray-900 tracking-tight hover:text-[var(--primary)] transition-colors"
+            className="text-base sm:text-lg font-bold text-gray-900 tracking-tight hover:text-[var(--primary)] transition-colors px-2 py-1"
           >
             AS
           </button>
@@ -110,12 +110,12 @@ const Navbar = ({ language, setLanguage, currentPage = 'home' }) => {
           </div>
 
           {/* Language Switcher & Mobile Menu */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <div className="inline-flex rounded-full border border-[var(--border)] bg-[var(--card)] p-1">
               <button
                 type="button"
                 onClick={() => setLanguage('en')}
-                className={`mono text-xs px-3 py-1 rounded-full font-medium transition-colors ${
+                className={`mono text-xs px-3 py-1.5 rounded-full font-medium transition-colors min-w-[44px] ${
                   language === 'en' ? 'bg-gray-900 text-white' : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
@@ -124,7 +124,7 @@ const Navbar = ({ language, setLanguage, currentPage = 'home' }) => {
               <button
                 type="button"
                 onClick={() => setLanguage('de')}
-                className={`mono text-xs px-3 py-1 rounded-full font-medium transition-colors ${
+                className={`mono text-xs px-3 py-1.5 rounded-full font-medium transition-colors min-w-[44px] ${
                   language === 'de' ? 'bg-gray-900 text-white' : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
@@ -133,7 +133,7 @@ const Navbar = ({ language, setLanguage, currentPage = 'home' }) => {
             </div>
 
             <button
-              className="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="md:hidden p-2.5 min-w-[44px] min-h-[44px] hover:bg-gray-100 rounded-lg transition-colors"
               onClick={() => setIsOpen(!isOpen)}
               aria-expanded={isOpen}
               aria-label="Toggle menu"
@@ -147,12 +147,12 @@ const Navbar = ({ language, setLanguage, currentPage = 'home' }) => {
       {/* Mobile Navigation */}
       {isOpen && (
         <div className="md:hidden border-t border-[var(--border)]">
-          <div className="px-2 pt-2 pb-3 space-y-1 bg-gradient-to-b from-[var(--card)] to-[var(--background)]">
+          <div className="px-3 pt-2 pb-3 space-y-1 bg-gradient-to-b from-[var(--card)] to-[var(--background)]">
             {navItems.map((item) => (
               <button
                 key={item.id}
                 onClick={() => scrollToSection(item.id)}
-                className={`block w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                className={`block w-full text-left px-3 py-3 rounded-lg text-sm font-medium transition-colors ${
                   activeSection === item.id
                     ? 'text-[var(--primary)] bg-[var(--primary)]/5'
                     : 'text-[var(--text-secondary)] hover:text-[var(--secondary)] hover:bg-gray-100'
