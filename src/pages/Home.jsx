@@ -322,7 +322,7 @@ const Home = ({ language }) => {
                     {language === 'de' ? 'GitHub' : 'View GitHub'}
                   </a>
                   <button onClick={() => setSelectedProject(featuredProject)} className="btn-accent inline-flex items-center gap-2 hover:shadow-lg transition-all">
-                    {language === 'de' ? 'Case Study' : 'Read Full Case Study'} <ArrowUpRight size={16} />
+                    {language === 'de' ? 'Schnellvorschau' : 'Quick Preview'} <ArrowUpRight size={16} />
                   </button>
                 </div>
               </div>
@@ -336,7 +336,7 @@ const Home = ({ language }) => {
             {/* Link to Full Case Study */}
             <div className="mt-12 pt-12 border-t border-[var(--border)]/30">
               <a href="#/flokka-details" className="inline-flex items-center gap-2 text-[var(--primary)] hover:text-[var(--primary)]/80 transition-colors font-semibold">
-                {language === 'de' ? 'Vollständige Case Study ansehen' : 'View Full Case Study'} <ArrowUpRight size={16} />
+                {language === 'de' ? 'Vollständige Seite öffnen' : 'Open Full Case Study Page'} <ArrowUpRight size={16} />
               </a>
             </div>
           </div>
@@ -442,10 +442,22 @@ const Home = ({ language }) => {
                       )}
                     </div>
 
-                    {/* View Details Button */}
-                    <button className="w-full py-2 px-3 rounded-lg border border-[var(--primary)]/30 text-[var(--primary)] text-sm font-semibold hover:bg-[var(--primary)]/10 transition-all group-hover:border-[var(--primary)]/60 flex items-center justify-center gap-2">
-                      View Details <ArrowUpRight size={14} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                    </button>
+                    {/* Actions */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <a
+                        href={project.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(event) => event.stopPropagation()}
+                        className="py-2 px-3 rounded-lg border border-[var(--primary)]/30 text-[var(--primary)] text-sm font-semibold hover:bg-[var(--primary)]/10 transition-all group-hover:border-[var(--primary)]/60 inline-flex items-center justify-center gap-2"
+                      >
+                        <Github size={14} />
+                        GitHub
+                      </a>
+                      <button className="w-full py-2 px-3 rounded-lg border border-[var(--primary)]/30 text-[var(--primary)] text-sm font-semibold hover:bg-[var(--primary)]/10 transition-all group-hover:border-[var(--primary)]/60 flex items-center justify-center gap-2">
+                        View Details <ArrowUpRight size={14} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

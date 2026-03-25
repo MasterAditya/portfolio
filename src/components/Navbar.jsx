@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Menu, X } from 'lucide-react';
 
+const SCROLL_TARGET_KEY = 'portfolio:scrollTarget';
+
 const Navbar = ({ language, setLanguage, currentPage = 'home' }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
@@ -55,15 +57,10 @@ const Navbar = ({ language, setLanguage, currentPage = 'home' }) => {
       return;
     }
 
-    // If currently on projects page, navigate back to home first
-    if (currentPage === 'projects') {
+    // If currently on any routed page, navigate back to home and then scroll.
+    if (currentPage !== 'home') {
+      sessionStorage.setItem(SCROLL_TARGET_KEY, section);
       window.location.hash = '';
-      setTimeout(() => {
-        const element = document.getElementById(section);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 100);
       return;
     }
 

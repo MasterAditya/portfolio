@@ -1,6 +1,8 @@
 import { ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { skills } from '../data/portfolioData';
 
+const SCROLL_TARGET_KEY = 'portfolio:scrollTarget';
+
 const SkillsPage = ({ language }) => {
   const copy = {
     en: {
@@ -48,8 +50,13 @@ const SkillsPage = ({ language }) => {
     { label: t.clean, description: language === 'de' ? 'SOLID principles, modular design, clear APIs' : 'SOLID principles, modular design, clear APIs' }
   ];
 
+  const goToContactOnHome = () => {
+    sessionStorage.setItem(SCROLL_TARGET_KEY, 'contact');
+    window.location.hash = '';
+  };
+
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white pt-14 sm:pt-16">
       {/* Header */}
       <div className="bg-gradient-to-b from-[var(--background)] to-white border-b border-[var(--border)]/30">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -161,9 +168,9 @@ const SkillsPage = ({ language }) => {
             <h2 className="text-2xl font-bold text-gray-900 mb-4">
               {language === 'de' ? 'Interessiert an meinen Fähigkeiten?' : 'Interested in working together?'}
             </h2>
-            <a href="#contact" className="btn-accent inline-flex items-center gap-2">
+            <button type="button" onClick={goToContactOnHome} className="btn-accent inline-flex items-center gap-2">
               {language === 'de' ? 'Kontakt aufnehmen' : 'Get in Touch'}
-            </a>
+            </button>
           </div>
         </div>
       </div>

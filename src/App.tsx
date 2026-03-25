@@ -6,6 +6,8 @@ import FlokkaCaseStudyPage from './pages/FlokkaCaseStudyPage';
 import SkillsPage from './pages/SkillsPage';
 import ConsentBanner from './components/ConsentBanner';
 
+const SCROLL_TARGET_KEY = 'portfolio:scrollTarget';
+
 const getCurrentPage = () => {
   const hash = window.location.hash;
   if (hash === '#/projects') return 'projects';
@@ -23,6 +25,29 @@ function App() {
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
+
+  useEffect(() => {
+    if (currentPage !== 'home') {
+      window.scrollTo({ top: 0, behavior: 'auto' });
+      return;
+    }
+
+    const targetSection = sessionStorage.getItem(SCROLL_TARGET_KEY);
+    if (targetSection) {
+      sessionStorage.removeItem(SCROLL_TARGET_KEY);
+      setTimeout(() => {
+        const element = document.getElementById(targetSection);
+        if (element) {
+          const offset = 64;
+          const elementPosition = element.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+        }
+      }, 80);
+      return;
+    }
+
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }, [currentPage]);
 
   return (
     <div className="min-h-screen">

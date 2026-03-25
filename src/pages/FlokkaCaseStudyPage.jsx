@@ -1,6 +1,8 @@
 import { ArrowLeft } from 'lucide-react';
 import FlokkaCaseStudy from '../components/FlokkaCaseStudy';
 
+const SCROLL_TARGET_KEY = 'portfolio:scrollTarget';
+
 const FlokkaCaseStudyPage = ({ language }) => {
   const copy = {
     en: {
@@ -15,10 +17,15 @@ const FlokkaCaseStudyPage = ({ language }) => {
 
   const t = copy[language] || copy.en;
 
+  const goToContactOnHome = () => {
+    sessionStorage.setItem(SCROLL_TARGET_KEY, 'contact');
+    window.location.hash = '';
+  };
+
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white pt-14 sm:pt-16">
       {/* Header with back button */}
-      <div className="bg-gradient-to-b from-[var(--background)] to-white border-b border-[var(--border)]/30 sticky top-0 z-40">
+      <div className="bg-gradient-to-b from-[var(--background)] to-white border-b border-[var(--border)]/30">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <a
             href="#/"
@@ -43,9 +50,9 @@ const FlokkaCaseStudyPage = ({ language }) => {
             <h2 className="text-2xl font-bold text-gray-900 mb-4">
               {language === 'de' ? 'Haben Sie eine ähnliche Herausforderung?' : 'Have a similar challenge?'}
             </h2>
-            <a href="#/contact" className="btn-accent inline-flex items-center gap-2">
+            <button type="button" onClick={goToContactOnHome} className="btn-accent inline-flex items-center gap-2">
               {language === 'de' ? 'Kontakt aufnehmen' : 'Get in Touch'}
-            </a>
+            </button>
           </div>
         </div>
       </div>
