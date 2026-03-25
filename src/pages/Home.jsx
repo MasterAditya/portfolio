@@ -530,13 +530,7 @@ const Home = ({ language }) => {
       </section>
 
       {/* CONTACT SECTION */}
-      <section id="contact" className="py-20 sm:py-24 lg:py-32 bg-gradient-to-br from-[var(--background)] to-white relative border-b-2 border-[var(--border)]/30">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[var(--primary)]/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
-        
-        <div className="relative z-10">
-          <Contact language={language} onPhoneAction={requestPhoneAccess} />
-        </div>
-      </section>
+      <Contact language={language} onPhoneAction={requestPhoneAccess} />
 
       <HumanCheckModal
         open={Boolean(verificationRequest)}
