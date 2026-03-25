@@ -552,11 +552,11 @@ const Home = ({ language }) => {
       {/* Project Modal */}
       {selectedProject && (
         <div
-          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 overflow-y-auto"
+          className="fixed inset-0 bg-black/50 z-[70] flex items-center justify-center p-2 sm:p-4 overflow-y-auto"
           onClick={() => setSelectedProject(null)}
         >
           <div
-            className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto my-8"
+            className="bg-white rounded-xl sm:rounded-2xl w-[96vw] sm:w-full max-w-4xl max-h-[88vh] sm:max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <ProjectDetailView project={selectedProject} language={language} onClose={() => setSelectedProject(null)} />

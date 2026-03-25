@@ -10,15 +10,13 @@ const Projects = ({ language }) => {
       title: 'Project Archive',
       helper: 'Filterable catalog of backend and AI systems',
       filterHelper: 'Filter by stack or domain',
-      noMatch: 'No projects match this filter yet.',
-      caseStudyCta: 'Read Flokka Full Case Study'
+      noMatch: 'No projects match this filter yet.'
     },
     de: {
       title: 'Projekt-Archiv',
       helper: 'Filterbarer Katalog von Backend- und KI-Systemen',
       filterHelper: 'Nach Stack oder Bereich filtern',
-      noMatch: 'Keine Projekte entsprechen diesem Filter.',
-      caseStudyCta: 'Flokka Vollständige Fallstudie lesen'
+      noMatch: 'Keine Projekte entsprechen diesem Filter.'
     }
   };
 
@@ -60,12 +58,6 @@ const Projects = ({ language }) => {
               <p className="mono text-xs text-gray-500 uppercase tracking-widest">{t.filterHelper}</p>
             </div>
             <p className="section-subtitle">{t.helper}</p>
-
-            <div className="mb-8">
-              <a href="#/flokka-details" className="inline-flex items-center gap-2 text-[var(--primary)] hover:text-[var(--secondary)] font-medium text-sm transition-colors">
-                {t.caseStudyCta}
-              </a>
-            </div>
 
             <div className="flex flex-wrap gap-2 mb-10">
               {projectFilters.map((filter) => (
