@@ -53,6 +53,7 @@ const Home = ({ language }) => {
       resumeSection: 'Resumes',
       resumeHelper: 'University template and official CV versions',
       otherProjects: 'Other Projects',
+      projectArchive: 'Open Full Project Archive',
       skillsSection: 'Skills & Expertise',
       skillsHelper: 'Core backend systems, AI/ML, and reliable infrastructure',
       exploreFull: 'Explore Full Skills',
@@ -71,6 +72,7 @@ const Home = ({ language }) => {
       resumeSection: 'Lebensläufe',
       resumeHelper: 'Universitätsvorlage und offizielle CV-Versionen',
       otherProjects: 'Weitere Projekte',
+      projectArchive: 'Vollständiges Projekt-Archiv öffnen',
       skillsSection: 'Fähigkeiten & Expertise',
       skillsHelper: 'Kern-Backend-Systeme, KI/ML und zuverlässige Infrastruktur',
       exploreFull: 'Vollständige Fähigkeiten erkunden',
@@ -462,6 +464,12 @@ const Home = ({ language }) => {
                 </div>
               </div>
             ))}
+          </div>
+
+          <div className="mt-10 pt-8 border-t border-[var(--border)]/30">
+            <a href="#/projects" className="inline-flex items-center gap-2 text-[var(--primary)] hover:text-[var(--primary)]/80 transition-colors font-semibold">
+              {t.projectArchive} <ArrowUpRight size={16} />
+            </a>
           </div>
         </div>
       </section>

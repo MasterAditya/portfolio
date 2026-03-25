@@ -10,7 +10,7 @@ const Navbar = ({ language, setLanguage, currentPage = 'home' }) => {
   const navItems = [
     { id: 'home', en: 'Home', de: 'Start', subsections: [] },
     { id: 'featured', en: 'Featured', de: 'Flaggschiff', subsections: [] },
-    { id: 'projects', en: 'Projects', de: 'Projekte', subsections: [] },
+    { id: 'projects', en: 'Archive', de: 'Archiv', subsections: [] },
     { id: 'capabilities', en: 'Capabilities', de: 'Fähigkeiten', subsections: [] },
     { id: 'resume', en: 'Resume', de: 'Lebenslauf', subsections: [] },
     { id: 'contact', en: 'Contact', de: 'Kontakt', subsections: [] }
