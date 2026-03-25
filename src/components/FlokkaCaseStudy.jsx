@@ -19,7 +19,46 @@ const FlokkaCaseStudy = ({ language = 'en' }) => {
       architectureHeading: 'System Architecture',
       architectureIntro: 'Flokka solves this through a decoupled, queue-based architecture that prioritizes API stability, embedding quality, and operational observability:',
       architectureDiagramLabel: 'Architecture Diagram',
-      architectureDiagram: 'Client -> API -> Redis Queue -> Worker -> ChromaDB\n                      |\n                      v\n                 Monitoring + CI Checks',
+      architectureDiagram: `┌──────────────────────────────────────────────────────────────────────┐
+    │                          Client / API Consumer                        │
+    └─────────────────────────────────┬────────────────────────────────────┘
+                  │  POST /api/v1/ingest/
+                  │  (multipart: file + chunk params)
+                  ▼
+    ┌──────────────────────────────────────────────────────────────────────┐
+    │                         FastAPI  (API tier)                           │
+    │                                                                       │
+    │  1. Validate MIME type and file size                                  │
+    │  2. Assign IngestionJob UUID                                          │
+    │  3. Enqueue Celery task -> Redis                                      │
+    │  4. Return 202 Accepted + job_id immediately                          │
+    └─────────────────────────────────┬────────────────────────────────────┘
+                  │  serialised task payload
+                  ▼
+    ┌──────────────────────────────────────────────────────────────────────┐
+    │                         Redis  (broker + result backend)              │
+    └──────────────────────────────────────────────────────────────────────┘
+          │                       │                       │
+          ▼                       ▼                       ▼
+    ┌──────────────────┐   ┌──────────────────┐   ┌──────────────────────┐
+    │ ingestion_worker │──>│ embedding_worker │──>│   indexing_worker    │
+    │                  │   │                  │   │                      │
+    │ • extract text   │   │ • load model     │   │ • upsert to ChromaDB │
+    │   (.txt/pdf/docx)│   │   (lazy, cached) │   │   ids, documents,    │
+    │ • fixed / overlap│   │ • encode chunks  │   │   embeddings,        │
+    │   chunking       │   │   -> float vectors│  │   metadata           │
+    │ • attach metadata│   │                  │   │                      │
+    └──────────────────┘   └──────────────────┘   └──────────────────────┘
+                          │
+                          ▼
+                      ┌──────────────────────┐
+                      │      ChromaDB        │
+                      │   (vector store)     │
+                      │                      │
+                      │  HNSW index          │
+                      │  cosine similarity   │
+                      │  metadata filtering  │
+                      └──────────────────────┘`,
       
       // Core components
       components: [
@@ -121,7 +160,46 @@ const FlokkaCaseStudy = ({ language = 'en' }) => {
       architectureHeading: 'Systemarchitektur',
       architectureIntro: 'Flokka löst dies durch eine entkoppelte, warteschlangenbasierte Architektur, die API-Stabilität, Embedding-Qualität und operative Transparenz priorisiert:',
       architectureDiagramLabel: 'Architekturdiagramm',
-      architectureDiagram: 'Client -> API -> Redis Queue -> Worker -> ChromaDB\n                      |\n                      v\n                 Monitoring + CI Checks',
+      architectureDiagram: `┌──────────────────────────────────────────────────────────────────────┐
+    │                          Client / API Consumer                        │
+    └─────────────────────────────────┬────────────────────────────────────┘
+                  │  POST /api/v1/ingest/
+                  │  (multipart: file + chunk params)
+                  ▼
+    ┌──────────────────────────────────────────────────────────────────────┐
+    │                         FastAPI  (API tier)                           │
+    │                                                                       │
+    │  1. Validate MIME type and file size                                  │
+    │  2. Assign IngestionJob UUID                                          │
+    │  3. Enqueue Celery task -> Redis                                      │
+    │  4. Return 202 Accepted + job_id immediately                          │
+    └─────────────────────────────────┬────────────────────────────────────┘
+                  │  serialised task payload
+                  ▼
+    ┌──────────────────────────────────────────────────────────────────────┐
+    │                         Redis  (broker + result backend)              │
+    └──────────────────────────────────────────────────────────────────────┘
+          │                       │                       │
+          ▼                       ▼                       ▼
+    ┌──────────────────┐   ┌──────────────────┐   ┌──────────────────────┐
+    │ ingestion_worker │──>│ embedding_worker │──>│   indexing_worker    │
+    │                  │   │                  │   │                      │
+    │ • extract text   │   │ • load model     │   │ • upsert to ChromaDB │
+    │   (.txt/pdf/docx)│   │   (lazy, cached) │   │   ids, documents,    │
+    │ • fixed / overlap│   │ • encode chunks  │   │   embeddings,        │
+    │   chunking       │   │   -> float vectors│  │   metadata           │
+    │ • attach metadata│   │                  │   │                      │
+    └──────────────────┘   └──────────────────┘   └──────────────────────┘
+                          │
+                          ▼
+                      ┌──────────────────────┐
+                      │      ChromaDB        │
+                      │   (vector store)     │
+                      │                      │
+                      │  HNSW index          │
+                      │  cosine similarity   │
+                      │  metadata filtering  │
+                      └──────────────────────┘`,
       
       // Core components
       components: [
@@ -269,7 +347,9 @@ const FlokkaCaseStudy = ({ language = 'en' }) => {
               <p className="mono text-[10px] uppercase tracking-wider text-[var(--text-secondary)] mb-2">
                 {t.architectureDiagramLabel}
               </p>
-              <pre className="mono text-xs text-[var(--text-secondary)] whitespace-pre-wrap leading-relaxed">{t.architectureDiagram}</pre>
+              <div className="overflow-x-auto">
+                <pre className="mono text-xs text-[var(--text-secondary)] whitespace-pre leading-relaxed min-w-max">{t.architectureDiagram}</pre>
+              </div>
             </div>
             <div className="space-y-3">
               {t.components.map((component, idx) => (
