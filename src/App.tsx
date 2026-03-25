@@ -7,8 +7,6 @@ import SkillsPage from './pages/SkillsPage';
 import ConsentBanner from './components/ConsentBanner';
 
 const SCROLL_TARGET_KEY = 'portfolio:scrollTarget';
-const NAVBAR_OFFSET = 64;
-const CONTACT_OFFSET = 8;
 
 const getCurrentPage = () => {
   const hash = window.location.hash;
@@ -40,9 +38,7 @@ function App() {
       setTimeout(() => {
         const element = document.getElementById(targetSection);
         if (element) {
-          const offset = targetSection === 'contact' ? CONTACT_OFFSET : NAVBAR_OFFSET;
-          const elementPosition = element.getBoundingClientRect().top + window.scrollY - offset;
-          window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       }, 80);
       return;

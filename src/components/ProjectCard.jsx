@@ -67,11 +67,6 @@ const ProjectCard = ({ project, language = 'en', detailed = true }) => {
       ? 'Queue-basierter Ingestion-Flow mit entkoppelter Verarbeitung fuer stabile API-Reaktionszeiten und zuverlaessige Indexierung.'
       : 'Queue-based ingestion flow with decoupled processing to keep API responses stable and indexing reliable.';
 
-  const flokkaArchitectureDiagram =
-    language === 'de'
-      ? 'Client -> API -> Redis Queue -> Worker -> ChromaDB\n                      |\n                      v\n                 Monitoring + CI Checks'
-      : 'Client -> API -> Redis Queue -> Worker -> ChromaDB\n                      |\n                      v\n                 Monitoring + CI Checks';
-
   const flokkaFlowSteps =
     language === 'de'
       ? [
@@ -260,12 +255,6 @@ const ProjectCard = ({ project, language = 'en', detailed = true }) => {
         <div className="mb-4">
           <h4 className="text-sm font-semibold text-gray-800 mb-1">{t.architecture}</h4>
           <p className="text-sm text-gray-600">{flokkaArchitectureDescription}</p>
-          <div className="mt-2 rounded-lg border border-[var(--border)] bg-[var(--background)] p-3">
-            <p className="mono text-[10px] uppercase tracking-wider text-[var(--text-secondary)] mb-2">
-              {language === 'de' ? 'Diagramm (Platzhalter)' : 'Diagram (Placeholder)'}
-            </p>
-            <pre className="mono text-xs text-[var(--text-secondary)] whitespace-pre-wrap leading-relaxed">{flokkaArchitectureDiagram}</pre>
-          </div>
         </div>
       )}
 

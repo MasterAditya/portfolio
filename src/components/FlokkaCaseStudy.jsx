@@ -18,6 +18,8 @@ const FlokkaCaseStudy = ({ language = 'en' }) => {
       // Architecture deep dive
       architectureHeading: 'System Architecture',
       architectureIntro: 'Flokka solves this through a decoupled, queue-based architecture that prioritizes API stability, embedding quality, and operational observability:',
+      architectureDiagramLabel: 'Architecture Diagram',
+      architectureDiagram: 'Client -> API -> Redis Queue -> Worker -> ChromaDB\n                      |\n                      v\n                 Monitoring + CI Checks',
       
       // Core components
       components: [
@@ -118,6 +120,8 @@ const FlokkaCaseStudy = ({ language = 'en' }) => {
       // Architecture deep dive
       architectureHeading: 'Systemarchitektur',
       architectureIntro: 'Flokka löst dies durch eine entkoppelte, warteschlangenbasierte Architektur, die API-Stabilität, Embedding-Qualität und operative Transparenz priorisiert:',
+      architectureDiagramLabel: 'Architekturdiagramm',
+      architectureDiagram: 'Client -> API -> Redis Queue -> Worker -> ChromaDB\n                      |\n                      v\n                 Monitoring + CI Checks',
       
       // Core components
       components: [
@@ -261,6 +265,12 @@ const FlokkaCaseStudy = ({ language = 'en' }) => {
         {isExpanded('architecture') && (
           <div className="mt-4 space-y-4">
             <p className="text-[var(--text-secondary)] leading-relaxed">{t.architectureIntro}</p>
+            <div className="rounded-lg border border-[var(--border)] bg-[var(--background)] p-4">
+              <p className="mono text-[10px] uppercase tracking-wider text-[var(--text-secondary)] mb-2">
+                {t.architectureDiagramLabel}
+              </p>
+              <pre className="mono text-xs text-[var(--text-secondary)] whitespace-pre-wrap leading-relaxed">{t.architectureDiagram}</pre>
+            </div>
             <div className="space-y-3">
               {t.components.map((component, idx) => (
                 <div key={idx} className="rounded-lg border border-[var(--border)] bg-[var(--card)] p-3">

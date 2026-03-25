@@ -2,8 +2,6 @@ import { useEffect, useState } from 'react';
 import { Menu, X } from 'lucide-react';
 
 const SCROLL_TARGET_KEY = 'portfolio:scrollTarget';
-const NAVBAR_OFFSET = 64;
-const CONTACT_OFFSET = 8;
 
 const Navbar = ({ language, setLanguage, currentPage = 'home' }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -69,12 +67,7 @@ const Navbar = ({ language, setLanguage, currentPage = 'home' }) => {
     // Normal section navigation on home page
     const element = document.getElementById(section);
     if (element) {
-      const offset = section === 'contact' ? CONTACT_OFFSET : NAVBAR_OFFSET;
-      const elementPosition = element.getBoundingClientRect().top + window.scrollY - offset;
-      window.scrollTo({
-        top: elementPosition,
-        behavior: 'smooth'
-      });
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
 
