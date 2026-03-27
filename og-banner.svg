@@ -1,0 +1,50 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F3F2EF" />
+      <stop offset="1" stop-color="#E8E5DF" />
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#C62828" />
+      <stop offset="1" stop-color="#8E1D1D" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)" />
+
+  <g opacity="0.25" stroke="#B9BEC8" stroke-width="1">
+    <path d="M0 70H1200" />
+    <path d="M0 140H1200" />
+    <path d="M0 210H1200" />
+    <path d="M0 280H1200" />
+    <path d="M0 350H1200" />
+    <path d="M0 420H1200" />
+    <path d="M0 490H1200" />
+    <path d="M0 560H1200" />
+    <path d="M120 0V630" />
+    <path d="M240 0V630" />
+    <path d="M360 0V630" />
+    <path d="M480 0V630" />
+    <path d="M600 0V630" />
+    <path d="M720 0V630" />
+    <path d="M840 0V630" />
+    <path d="M960 0V630" />
+    <path d="M1080 0V630" />
+  </g>
+
+  <circle cx="1020" cy="120" r="78" fill="#C62828" fill-opacity="0.15" />
+  <circle cx="1085" cy="215" r="52" fill="#A52727" fill-opacity="0.18" />
+
+  <rect x="70" y="72" width="262" height="38" rx="19" fill="#1B1F24" />
+  <text x="95" y="96" fill="#F5F5F5" font-family="'IBM Plex Mono', monospace" font-size="18" letter-spacing="1.8">AI ENGINEERING PORTFOLIO</text>
+
+  <text x="70" y="224" fill="#1B1F24" font-family="'Space Grotesk', sans-serif" font-size="74" font-weight="700">Aditya Sharma</text>
+  <text x="70" y="288" fill="#313741" font-family="'Space Grotesk', sans-serif" font-size="38" font-weight="500">AI Backend Engineer | ML Systems Builder</text>
+  <text x="70" y="356" fill="#5A616A" font-family="'Space Grotesk', sans-serif" font-size="30">RAG Pipelines • Knowledge Graphs • FastAPI • Production AI</text>
+
+  <rect x="70" y="432" width="460" height="112" rx="16" fill="#FFFFFF" stroke="#D2D7DF" stroke-width="2" />
+  <text x="96" y="468" fill="#7A838D" font-family="'IBM Plex Mono', monospace" font-size="16">PERFORMANCE SNAPSHOT</text>
+  <text x="96" y="514" fill="#C62828" font-family="'Space Grotesk', sans-serif" font-size="34" font-weight="700">88% test coverage • 1.2s latency</text>
+
+  <rect x="910" y="470" width="220" height="72" rx="12" fill="url(#accent)" />
+  <text x="940" y="516" fill="#FFFFFF" font-family="'Space Grotesk', sans-serif" font-size="28" font-weight="700">EU-ready</text>
+</svg>
