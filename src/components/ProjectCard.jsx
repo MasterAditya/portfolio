@@ -1,7 +1,7 @@
 import { Github, ExternalLink } from 'lucide-react';
 import { useState } from 'react';
 
-const ProjectCard = ({ project, language = 'en', detailed = true }) => {
+const ProjectCard = ({ project, language = 'en', detailed = true, mode = 'engineer' }) => {
   const [expandedSection, setExpandedSection] = useState(null);
 
   const labels = {
@@ -85,7 +85,7 @@ const ProjectCard = ({ project, language = 'en', detailed = true }) => {
         ];
 
   return (
-    <div className="card card-accent">
+    <div className="card card-accent hover-lift">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-3">
         <div>
           <p className="mono text-xs uppercase tracking-wider text-[var(--text-secondary)] mb-2">{project.category || t.aiProject}</p>
@@ -97,6 +97,22 @@ const ProjectCard = ({ project, language = 'en', detailed = true }) => {
       </div>
 
       <p className="text-[var(--text-secondary)] mb-6">{summaryDescription}</p>
+
+      {mode === 'recruiter' && (
+        <div className="mb-4 rounded-lg border border-[var(--border)] bg-[var(--background)]/70 p-3">
+          <p className="mono text-[10px] uppercase tracking-wider text-[var(--text-secondary)] mb-1">
+            {language === 'de' ? 'Recruiter Snapshot' : 'Recruiter Snapshot'}
+          </p>
+          <p className="text-sm text-gray-700 mb-2">{project.outcome || project.description}</p>
+          <div className="flex flex-wrap gap-2">
+            {(project.impact || []).slice(0, 2).map((impactItem) => (
+              <span key={impactItem} className="inline-flex text-xs rounded-full border border-[var(--primary)]/25 px-2 py-1 text-[var(--primary)] bg-white">
+                {impactItem}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Expandable detailed sections */}
       {detailed && (
@@ -292,6 +308,17 @@ const ProjectCard = ({ project, language = 'en', detailed = true }) => {
           <p className="text-sm text-gray-600">{project.outcome}</p>
         </div>
       )}
+
+      <div className="mb-4">
+        <p className="mono text-[10px] uppercase tracking-wider text-[var(--text-secondary)] mb-2">
+          {language === 'de' ? 'Nachweise' : 'Proof Tags'}
+        </p>
+        <div className="flex flex-wrap gap-2">
+          <span className="text-xs rounded-full border border-[var(--border)] px-2 py-1 bg-white">GitHub</span>
+          <span className="text-xs rounded-full border border-[var(--border)] px-2 py-1 bg-white">Architecture</span>
+          <span className="text-xs rounded-full border border-[var(--border)] px-2 py-1 bg-white">Impact</span>
+        </div>
+      </div>
 
       <div className="flex flex-col sm:flex-row gap-3">
         <a

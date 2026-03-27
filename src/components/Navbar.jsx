@@ -3,7 +3,13 @@ import { Menu, X } from 'lucide-react';
 
 const SCROLL_TARGET_KEY = 'portfolio:scrollTarget';
 
-const Navbar = ({ language, setLanguage, currentPage = 'home' }) => {
+const Navbar = ({
+  language,
+  setLanguage,
+  currentPage = 'home',
+  experienceMode = 'recruiter',
+  setExperienceMode,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
 
@@ -17,6 +23,10 @@ const Navbar = ({ language, setLanguage, currentPage = 'home' }) => {
   ];
 
   const [showSubNav, setShowSubNav] = useState(false);
+  const modeCopy = {
+    recruiter: language === 'de' ? 'Recruiter' : 'Recruiter',
+    engineer: language === 'de' ? 'Engineer' : 'Engineer'
+  };
 
   useEffect(() => {
     if (currentPage === 'projects') {
@@ -103,6 +113,27 @@ const Navbar = ({ language, setLanguage, currentPage = 'home' }) => {
 
           {/* Language Switcher & Mobile Menu */}
           <div className="flex items-center gap-2 sm:gap-4">
+            <div className="hidden lg:inline-flex rounded-full border border-[var(--border)] bg-[var(--card)] p-1">
+              <button
+                type="button"
+                onClick={() => setExperienceMode?.('recruiter')}
+                className={`mono text-[10px] px-3 py-1.5 rounded-full font-semibold uppercase tracking-wider transition-colors ${
+                  experienceMode === 'recruiter' ? 'bg-[var(--primary)] text-white' : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                {modeCopy.recruiter}
+              </button>
+              <button
+                type="button"
+                onClick={() => setExperienceMode?.('engineer')}
+                className={`mono text-[10px] px-3 py-1.5 rounded-full font-semibold uppercase tracking-wider transition-colors ${
+                  experienceMode === 'engineer' ? 'bg-gray-900 text-white' : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                {modeCopy.engineer}
+              </button>
+            </div>
+
             <div className="inline-flex rounded-full border border-[var(--border)] bg-[var(--card)] p-1">
               <button
                 type="button"
@@ -140,6 +171,27 @@ const Navbar = ({ language, setLanguage, currentPage = 'home' }) => {
       {isOpen && (
         <div className="md:hidden border-t border-[var(--border)]">
           <div className="px-3 pt-2 pb-3 space-y-1 bg-gradient-to-b from-[var(--card)] to-[var(--background)]">
+            <div className="inline-flex w-full rounded-xl border border-[var(--border)] bg-[var(--card)] p-1 mb-2">
+              <button
+                type="button"
+                onClick={() => setExperienceMode?.('recruiter')}
+                className={`w-1/2 mono text-xs px-3 py-2 rounded-lg font-semibold uppercase tracking-wider transition-colors ${
+                  experienceMode === 'recruiter' ? 'bg-[var(--primary)] text-white' : 'text-gray-600'
+                }`}
+              >
+                {modeCopy.recruiter}
+              </button>
+              <button
+                type="button"
+                onClick={() => setExperienceMode?.('engineer')}
+                className={`w-1/2 mono text-xs px-3 py-2 rounded-lg font-semibold uppercase tracking-wider transition-colors ${
+                  experienceMode === 'engineer' ? 'bg-gray-900 text-white' : 'text-gray-600'
+                }`}
+              >
+                {modeCopy.engineer}
+              </button>
+            </div>
+
             {navItems.map((item) => (
               <button
                 key={item.id}

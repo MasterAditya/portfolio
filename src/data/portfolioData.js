@@ -26,6 +26,7 @@ export const resumeDocuments = [
     context: "For internships and campus recruitment drives at LPU and partner institutions",
     contextDe: "Fuer Praktika und Campus-Rekrutierung bei LPU und Partnerinstitutionen",
     file: "resumes/university-template-demo.pdf",
+    downloadName: "Aditya's University Resume.pdf",
     note: "Includes academic profile, internship exposure, and campus-ready format",
     noteDe: "Enthaelt akademisches Profil, Praktikumserfahrung und campusgerechtes Format",
     badge: "Campus"
@@ -39,6 +40,7 @@ export const resumeDocuments = [
     context: "For roles at global companies and international job applications",
     contextDe: "Fuer Stellen bei globalen Unternehmen und internationale Bewerbungen",
     file: "resumes/official-english-resume-demo.pdf",
+    downloadName: "Aditya's International Resume.pdf",
     note: "Primary version for international backend and AI systems applications",
     noteDe: "Primaere Version fuer internationale Bewerbungen im Backend- und KI-Systems-Bereich",
     badge: "Global"
@@ -52,6 +54,7 @@ export const resumeDocuments = [
     context: "For German-speaking companies and EU job applications (German CV format)",
     contextDe: "Fuer deutschsprachige Unternehmen und EU-Bewerbungen (deutsches CV-Format)",
     file: "resumes/official-german-resume-demo.pdf",
+    downloadName: "Aditya's German Resume.pdf",
     note: "Prepared for German and broader EU engineering applications",
     noteDe: "Vorbereitet fuer deutsche und weitere EU-Engineering-Bewerbungen",
     badge: "Deutsch"

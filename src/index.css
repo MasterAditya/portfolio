@@ -225,6 +225,30 @@ button:focus-visible,
 	scroll-margin-top: var(--anchor-offset);
 }
 
+.hover-lift {
+	transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.hover-lift:hover {
+	transform: translateY(-4px);
+	box-shadow: 0 10px 26px rgba(15, 23, 42, 0.1), 0 6px 18px rgba(220, 38, 38, 0.08);
+}
+
+.project-grid-animate {
+	animation: projectGridFade 0.32s ease;
+}
+
+@keyframes projectGridFade {
+	from {
+		opacity: 0;
+		transform: translateY(8px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
 /* Section Anchors */
 section[id] {
 	scroll-margin-top: var(--anchor-offset);

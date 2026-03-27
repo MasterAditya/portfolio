@@ -3,7 +3,7 @@ import { skills } from '../data/portfolioData';
 
 const SCROLL_TARGET_KEY = 'portfolio:scrollTarget';
 
-const SkillsPage = ({ language }) => {
+const SkillsPage = ({ language, experienceMode = 'recruiter' }) => {
   const copy = {
     en: {
       backToPortfolio: 'Back to Portfolio',
@@ -168,6 +168,11 @@ const SkillsPage = ({ language }) => {
             <h2 className="text-2xl font-bold text-gray-900 mb-4">
               {language === 'de' ? 'Interessiert an meinen Fähigkeiten?' : 'Interested in working together?'}
             </h2>
+            <p className="text-sm text-gray-600 mb-4">
+              {experienceMode === 'engineer'
+                ? (language === 'de' ? 'Technische Details bereit fuer Deep-Dive Gespräche.' : 'Technical details prepared for deep-dive conversations.')
+                : (language === 'de' ? 'Schneller Ueberblick fuer Recruiter und Hiring Teams.' : 'Fast clarity for recruiters and hiring teams.')}
+            </p>
             <button type="button" onClick={goToContactOnHome} className="btn-accent inline-flex items-center gap-2">
               {language === 'de' ? 'Kontakt aufnehmen' : 'Get in Touch'}
             </button>

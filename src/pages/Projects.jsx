@@ -1,26 +1,39 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { projects, projectFilters } from '../data/portfolioData';
 import ProjectCard from '../components/ProjectCard';
 
-const Projects = ({ language }) => {
-  const [activeFilter, setActiveFilter] = useState('All');
+const FILTER_STORAGE_KEY = 'portfolio:archiveFilter';
+
+const Projects = ({ language, experienceMode = 'recruiter' }) => {
+  const [activeFilter, setActiveFilter] = useState(() => {
+    const stored = localStorage.getItem(FILTER_STORAGE_KEY);
+    return projectFilters.includes(stored) ? stored : 'All';
+  });
 
   const labels = {
     en: {
       title: 'Project Archive',
       helper: 'Filterable catalog of backend and AI systems',
       filterHelper: 'Filter by stack or domain',
-      noMatch: 'No projects match this filter yet.'
+      noMatch: 'No projects match this filter yet.',
+      modeRecruiter: 'Recruiter view prioritizes business outcomes and clarity.',
+      modeEngineer: 'Engineer view exposes architecture, trade-offs, and technical depth.'
     },
     de: {
       title: 'Projekt-Archiv',
       helper: 'Filterbarer Katalog von Backend- und KI-Systemen',
       filterHelper: 'Nach Stack oder Bereich filtern',
-      noMatch: 'Keine Projekte entsprechen diesem Filter.'
+      noMatch: 'Keine Projekte entsprechen diesem Filter.',
+      modeRecruiter: 'Recruiter-Ansicht priorisiert Ergebnis und Klarheit.',
+      modeEngineer: 'Engineer-Ansicht zeigt Architektur, Trade-offs und technische Tiefe.'
     }
   };
 
   const t = labels[language] || labels.en;
+
+  useEffect(() => {
+    localStorage.setItem(FILTER_STORAGE_KEY, activeFilter);
+  }, [activeFilter]);
 
   const filteredProjects = useMemo(() => {
     if (activeFilter === 'All') {
@@ -58,6 +71,9 @@ const Projects = ({ language }) => {
               <p className="mono text-xs text-gray-500 uppercase tracking-widest">{t.filterHelper}</p>
             </div>
             <p className="section-subtitle">{t.helper}</p>
+            <p className="text-sm text-gray-600 mb-6">
+              {experienceMode === 'recruiter' ? t.modeRecruiter : t.modeEngineer}
+            </p>
 
             <div className="flex flex-wrap gap-2 mb-10">
               {projectFilters.map((filter) => (
@@ -76,9 +92,15 @@ const Projects = ({ language }) => {
             </div>
 
             {/* Projects Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 project-grid-animate">
               {filteredProjects.map((project) => (
-                <ProjectCard key={project.id} project={project} language={language} detailed />
+                <ProjectCard
+                  key={`${project.id}-${activeFilter}-${experienceMode}`}
+                  project={project}
+                  language={language}
+                  mode={experienceMode}
+                  detailed={experienceMode === 'engineer'}
+                />
               ))}
             </div>
             {filteredProjects.length === 0 && (

@@ -1,8 +1,9 @@
 import { Github, Zap, Database, Settings, TrendingUp, ChevronDown } from 'lucide-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
-const FlokkaCaseStudy = ({ language = 'en' }) => {
-  const [expandedSection, setExpandedSection] = useState('problem');
+const FlokkaCaseStudy = ({ language = 'en', experienceMode = 'recruiter' }) => {
+  const [expandedSection, setExpandedSection] = useState(experienceMode === 'engineer' ? 'problem' : 'results');
+  const [activeArchitectureNode, setActiveArchitectureNode] = useState('api');
 
   const content = {
     en: {
@@ -293,6 +294,18 @@ const FlokkaCaseStudy = ({ language = 'en' }) => {
   const isExpanded = (section) => expandedSection === section;
   const toggleSection = (section) => setExpandedSection(expandedSection === section ? null : section);
 
+  const architectureNodes = useMemo(
+    () => [
+      { id: 'api', label: 'API Tier', detail: 'FastAPI validates files, creates job IDs, and acknowledges immediately.' },
+      { id: 'queue', label: 'Queue Broker', detail: 'Redis decouples response latency from processing workloads.' },
+      { id: 'workers', label: 'Worker Layer', detail: 'Dedicated workers perform extraction, embedding, and indexing in sequence.' },
+      { id: 'vector', label: 'Vector Store', detail: 'ChromaDB stores vectors with metadata for semantic retrieval.' }
+    ],
+    []
+  );
+
+  const activeNodeDetail = architectureNodes.find((node) => node.id === activeArchitectureNode)?.detail;
+
   return (
     <div className="w-full max-w-4xl mx-auto py-8 px-4">
       {/* Hero Header */}
@@ -304,7 +317,7 @@ const FlokkaCaseStudy = ({ language = 'en' }) => {
       </div>
 
       {/* Problem Section */}
-      <div className="mb-6 pb-6 border-b border-[var(--border)]">
+      <div id="flokka-problem" className="mb-6 pb-6 border-b border-[var(--border)]">
         <button
           onClick={() => toggleSection('problem')}
           className="w-full flex items-center justify-between group hover:no-underline"
@@ -326,7 +339,7 @@ const FlokkaCaseStudy = ({ language = 'en' }) => {
       </div>
 
       {/* Architecture Section */}
-      <div className="mb-6 pb-6 border-b border-[var(--border)]">
+      <div id="flokka-architecture" className="mb-6 pb-6 border-b border-[var(--border)]">
         <button
           onClick={() => toggleSection('architecture')}
           className="w-full flex items-center justify-between group hover:no-underline"
@@ -351,6 +364,32 @@ const FlokkaCaseStudy = ({ language = 'en' }) => {
                 <pre className="mono text-xs text-[var(--text-secondary)] whitespace-pre leading-relaxed min-w-max">{t.architectureDiagram}</pre>
               </div>
             </div>
+
+            <div className="rounded-lg border border-[var(--border)] bg-white p-4">
+              <p className="mono text-[10px] uppercase tracking-wider text-[var(--text-secondary)] mb-3">
+                {language === 'de' ? 'Interaktive Architekturansicht' : 'Interactive Architecture Lens'}
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
+                {architectureNodes.map((node) => (
+                  <button
+                    key={node.id}
+                    type="button"
+                    onMouseEnter={() => setActiveArchitectureNode(node.id)}
+                    onFocus={() => setActiveArchitectureNode(node.id)}
+                    onClick={() => setActiveArchitectureNode(node.id)}
+                    className={`rounded-lg border px-3 py-2 text-left transition-colors ${
+                      activeArchitectureNode === node.id
+                        ? 'border-[var(--primary)] bg-[var(--primary)]/10 text-[var(--primary)]'
+                        : 'border-[var(--border)] bg-[var(--background)] text-gray-700 hover:border-[var(--primary)]/50'
+                    }`}
+                  >
+                    <span className="text-xs font-semibold uppercase tracking-wide">{node.label}</span>
+                  </button>
+                ))}
+              </div>
+              <p className="text-sm text-gray-700 mt-3">{activeNodeDetail}</p>
+            </div>
+
             <div className="space-y-3">
               {t.components.map((component, idx) => (
                 <div key={idx} className="rounded-lg border border-[var(--border)] bg-[var(--card)] p-3">
@@ -364,7 +403,7 @@ const FlokkaCaseStudy = ({ language = 'en' }) => {
       </div>
 
       {/* System Flow Section */}
-      <div className="mb-6 pb-6 border-b border-[var(--border)]">
+      <div id="flokka-flow" className="mb-6 pb-6 border-b border-[var(--border)]">
         <button
           onClick={() => toggleSection('flow')}
           className="w-full flex items-center justify-between group hover:no-underline"
@@ -398,7 +437,7 @@ const FlokkaCaseStudy = ({ language = 'en' }) => {
       </div>
 
       {/* Engineering Decisions Section */}
-      <div className="mb-6 pb-6 border-b border-[var(--border)]">
+      <div id="flokka-decisions" className="mb-6 pb-6 border-b border-[var(--border)]">
         <button
           onClick={() => toggleSection('decisions')}
           className="w-full flex items-center justify-between group hover:no-underline"
@@ -425,7 +464,7 @@ const FlokkaCaseStudy = ({ language = 'en' }) => {
       </div>
 
       {/* Trade-offs Section */}
-      <div className="mb-6 pb-6 border-b border-[var(--border)]">
+      <div id="flokka-tradeoffs" className="mb-6 pb-6 border-b border-[var(--border)]">
         <button
           onClick={() => toggleSection('tradeoffs')}
           className="w-full flex items-center justify-between group hover:no-underline"
@@ -451,13 +490,16 @@ const FlokkaCaseStudy = ({ language = 'en' }) => {
       </div>
 
       {/* Results Section */}
-      <div className="mb-6 pb-6 border-b border-[var(--border)]">
+      <div id="flokka-results" className="mb-6 pb-6 border-b border-[var(--border)]">
         <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">{t.resultsHeading}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {t.results.map((result, idx) => (
             <div key={idx} className="rounded-lg border border-[var(--border)] bg-[var(--background)] p-4">
               <p className="font-bold text-[var(--primary)] text-base mb-1">{result.metric}</p>
               <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{result.description}</p>
+              <span className="inline-flex mt-2 rounded-full border border-[var(--primary)]/30 px-2 py-1 text-[10px] mono uppercase tracking-wider text-[var(--primary)]">
+                Proof
+              </span>
             </div>
           ))}
         </div>

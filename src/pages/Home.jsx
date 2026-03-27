@@ -3,9 +3,10 @@ import {
   personalInfo,
   projects,
   resumeDocuments,
-  contact
+  contact,
+  aiImpact
 } from '../data/portfolioData';
-import { Github, Linkedin, Download, ArrowUpRight, CheckCircle2, Mail, Phone, ChevronDown } from 'lucide-react';
+import { Github, Linkedin, Download, ArrowUpRight, Mail, Phone, ChevronDown } from 'lucide-react';
 import { skills } from '../data/portfolioData';
 import ProjectCard from '../components/ProjectCard';
 import Certifications from '../components/Certifications';
@@ -14,12 +15,15 @@ import ProjectDetailView from '../components/ProjectDetailView';
 import EngineeeringCapabilities from '../components/EngineeeringCapabilities';
 import CollapsibleFooterSection from '../components/CollapsibleFooterSection';
 import HumanCheckModal from '../components/HumanCheckModal';
+import HeroImpactTicker from '../components/HeroImpactTicker';
+import ImpactLedger from '../components/ImpactLedger';
 
-const Home = ({ language }) => {
+const Home = ({ language, experienceMode = 'recruiter' }) => {
   const [selectedProject, setSelectedProject] = useState(null);
   const [privacyOpen, setPrivacyOpen] = useState(false);
   const [legalOpen, setLegalOpen] = useState(false);
   const [contactMenuOpen, setContactMenuOpen] = useState(false);
+  const [quickSummaryOpen, setQuickSummaryOpen] = useState(false);
   const [animatedStats, setAnimatedStats] = useState(() =>
     personalInfo.heroStats.map(() => 0)
   );
@@ -58,7 +62,15 @@ const Home = ({ language }) => {
       skillsHelper: 'Core backend systems, AI/ML, and reliable infrastructure',
       exploreFull: 'Explore Full Skills',
       availability: 'Open to Opportunities',
-      availabilityDesc: 'Backend Engineering • AI Systems • Platform Engineering'
+      availabilityDesc: 'Backend Engineering • AI Systems • Platform Engineering',
+      modeRecruiter: 'Recruiter Mode',
+      modeEngineer: 'Engineer Mode',
+      fastSummary: 'View 90-sec Summary',
+      deepDive: 'Deep Technical Walkthrough',
+      proof: 'Proof',
+      highlightedEvidence: 'Highlighted Evidence',
+      recruiterHelper: 'Skim impact and role fit in under 90 seconds.',
+      engineerHelper: 'Inspect architecture depth, trade-offs, and system decisions.'
     },
     de: {
       portfolioLabel: 'Backend-Engineering-Portfolio',
@@ -77,7 +89,15 @@ const Home = ({ language }) => {
       skillsHelper: 'Kern-Backend-Systeme, KI/ML und zuverlässige Infrastruktur',
       exploreFull: 'Vollständige Fähigkeiten erkunden',
       availability: 'Offen für Gelegenheiten',
-      availabilityDesc: 'Backend-Engineering • KI-Systeme • Plattform-Technik'
+      availabilityDesc: 'Backend-Engineering • KI-Systeme • Plattform-Technik',
+      modeRecruiter: 'Recruiter-Modus',
+      modeEngineer: 'Engineer-Modus',
+      fastSummary: '90-Sekunden-Zusammenfassung',
+      deepDive: 'Technischer Deep Dive',
+      proof: 'Nachweis',
+      highlightedEvidence: 'Hervorgehobene Nachweise',
+      recruiterHelper: 'Impact und Rollen-Fit in unter 90 Sekunden erfassen.',
+      engineerHelper: 'Architektur, Trade-offs und Entscheidungen detailliert prüfen.'
     }
   };
 
@@ -108,6 +128,21 @@ const Home = ({ language }) => {
   const otherProjects = useMemo(() => {
     return localizedProjects.filter((project) => project.id !== 2);
   }, [localizedProjects]);
+
+  const quickSummaryItems = useMemo(
+    () => [
+      language === 'de' ? '3 produktionsnahe Backend/AI-Systeme' : '3 production-focused backend and AI systems',
+      language === 'de' ? 'Asynchrone Architekturen halten APIs unter Last stabil' : 'Async-first architecture keeps APIs responsive under load',
+      language === 'de' ? 'Nachweise ueber GitHub-Repositories und Case Studies' : 'Proof links available through GitHub repositories and case-study artifacts'
+    ],
+    [language]
+  );
+
+  const featuredProofTags = [
+    { label: 'GitHub', href: featuredProject?.github },
+    { label: 'CI/CD', href: featuredProject?.github },
+    { label: 'Architecture', href: '#/flokka-details' }
+  ].filter((item) => Boolean(item.href));
 
   // Animation
   useEffect(() => {
@@ -157,7 +192,7 @@ const Home = ({ language }) => {
       const filePath = withBaseUrl(verificationRequest.doc.file);
       const link = document.createElement('a');
       link.href = filePath;
-      link.setAttribute('download', '');
+      link.setAttribute('download', verificationRequest.doc.downloadName || 'resume.pdf');
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -183,6 +218,11 @@ const Home = ({ language }) => {
             <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-8 lg:gap-12 items-center min-h-[560px] lg:min-h-[600px]">
               <div className="max-w-3xl space-y-6">
                 <p className="mono text-xs uppercase tracking-[0.2em] text-[var(--primary)] mb-4 animate-fadeIn">{t.portfolioLabel}</p>
+                <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-white/80 px-3 py-1.5">
+                  <span className="mono text-[10px] uppercase tracking-[0.14em] text-[var(--text-secondary)]">
+                    {experienceMode === 'recruiter' ? t.modeRecruiter : t.modeEngineer}
+                  </span>
+                </div>
                 
                 <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-8 group text-center sm:text-left">
                   <img
@@ -216,9 +256,25 @@ const Home = ({ language }) => {
                   ))}
                 </div>
 
+                <p className="text-sm text-gray-600">
+                  {experienceMode === 'recruiter' ? t.recruiterHelper : t.engineerHelper}
+                </p>
+
+                <HeroImpactTicker items={aiImpact} language={language} />
+
                 <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 pt-4">
                   <a href="#featured" className="btn-accent inline-flex items-center gap-2 hover:shadow-lg transition-all">
                     {t.viewProjects} <ArrowUpRight size={18} />
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => setQuickSummaryOpen(true)}
+                    className="btn-secondary inline-flex items-center gap-2 hover:shadow-lg transition-all"
+                  >
+                    {t.fastSummary}
+                  </button>
+                  <a href="#/flokka-details" className="btn-secondary inline-flex items-center gap-2 hover:shadow-lg transition-all">
+                    {t.deepDive} <ArrowUpRight size={16} />
                   </a>
                   <div className="relative" ref={contactMenuRef}>
                     <button
@@ -279,6 +335,8 @@ const Home = ({ language }) => {
         </div>
       </section>
 
+      <ImpactLedger language={language} items={aiImpact} />
+
       {/* FEATURED SECTION */}
       {featuredProject && (
         <section id="featured" className="py-20 sm:py-24 lg:py-32 bg-gradient-to-b from-white via-[var(--background)] to-white relative overflow-hidden border-b-2 border-[var(--border)]/30">
@@ -301,6 +359,9 @@ const Home = ({ language }) => {
                         {item.split(' ')[0]}
                       </p>
                       <p className="text-xs text-gray-600 mt-1">{item.split(' ').slice(1).join(' ')}</p>
+                      <span className="inline-flex mt-2 mono text-[10px] uppercase tracking-wider text-[var(--primary)] border border-[var(--primary)]/25 rounded-full px-2 py-1">
+                        {t.proof}: metrics
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -311,6 +372,23 @@ const Home = ({ language }) => {
                   {(featuredProject.techStack || []).slice(0, 8).map((tech) => (
                     <span key={tech} className="mono chip text-xs bg-white border border-[var(--primary)]/30 hover:border-[var(--primary)] hover:bg-[var(--primary)]/5 transition-all">{tech}</span>
                   ))}
+                </div>
+
+                <div>
+                  <p className="mono text-[10px] uppercase tracking-[0.14em] text-gray-500 mb-2">{t.highlightedEvidence}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {featuredProofTags.map((tag) => (
+                      <a
+                        key={tag.label}
+                        href={tag.href}
+                        target={tag.href?.startsWith('http') ? '_blank' : undefined}
+                        rel={tag.href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+                        className="rounded-full border border-[var(--border)] bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 hover:border-[var(--primary)] hover:text-[var(--primary)] transition-colors"
+                      >
+                        {tag.label}
+                      </a>
+                    ))}
+                  </div>
                 </div>
 
                 <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 pt-4">
@@ -331,7 +409,7 @@ const Home = ({ language }) => {
 
               {/* Right: Project Card */}
               <div className="flex flex-col gap-4">
-                <ProjectCard project={featuredProject} language={language} detailed={false} />
+                <ProjectCard project={featuredProject} language={language} mode={experienceMode} detailed={false} />
               </div>
             </div>
 
@@ -396,7 +474,7 @@ const Home = ({ language }) => {
               <div
                 key={project.id}
                 onClick={() => setSelectedProject(project)}
-                className="group cursor-pointer"
+                className="group cursor-pointer hover-lift"
               >
                 <div className="relative overflow-hidden rounded-xl transition-all duration-300 hover:shadow-2xl h-full">
                   {/* Compact Immersive Card */}
@@ -611,6 +689,44 @@ const Home = ({ language }) => {
           </div>
         </div>
       </footer>
+
+      {quickSummaryOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-[72] flex items-center justify-center p-4"
+          onClick={() => setQuickSummaryOpen(false)}
+        >
+          <div
+            className="w-full max-w-2xl rounded-2xl border border-[var(--border)] bg-white p-6 shadow-2xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="flex items-center justify-between gap-4 mb-4">
+              <h3 className="text-xl font-bold text-gray-900">{t.fastSummary}</h3>
+              <button
+                type="button"
+                onClick={() => setQuickSummaryOpen(false)}
+                className="rounded-lg border border-[var(--border)] px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900"
+              >
+                Close
+              </button>
+            </div>
+            <div className="space-y-3">
+              {quickSummaryItems.map((item) => (
+                <div key={item} className="rounded-xl border border-[var(--border)] bg-[var(--background)]/60 p-3 text-sm text-gray-700">
+                  {item}
+                </div>
+              ))}
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3 mt-6">
+              <a href="#/flokka-details" className="btn-accent inline-flex items-center justify-center gap-2">
+                {t.deepDive} <ArrowUpRight size={16} />
+              </a>
+              <a href="#contact" className="btn-secondary inline-flex items-center justify-center gap-2">
+                {t.contactMe}
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
       </div>
     </div>
   );

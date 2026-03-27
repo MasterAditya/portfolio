@@ -8,6 +8,7 @@ import ConsentBanner from './components/ConsentBanner';
 import BackToTopButton from './components/BackToTopButton';
 
 const SCROLL_TARGET_KEY = 'portfolio:scrollTarget';
+const EXPERIENCE_MODE_KEY = 'portfolio:experienceMode';
 
 const getCurrentPage = () => {
   const hash = window.location.hash;
@@ -20,6 +21,14 @@ const getCurrentPage = () => {
 function App() {
   const [language, setLanguage] = useState('en');
   const [currentPage, setCurrentPage] = useState(getCurrentPage);
+  const [experienceMode, setExperienceMode] = useState(() => {
+    const stored = localStorage.getItem(EXPERIENCE_MODE_KEY);
+    return stored === 'engineer' ? 'engineer' : 'recruiter';
+  });
+
+  useEffect(() => {
+    localStorage.setItem(EXPERIENCE_MODE_KEY, experienceMode);
+  }, [experienceMode]);
 
   useEffect(() => {
     const handleHashChange = () => setCurrentPage(getCurrentPage());
@@ -51,16 +60,22 @@ function App() {
   return (
     <div className="min-h-screen">
       <a href="#main-content" className="skip-link">Skip to main content</a>
-      <Navbar language={language} setLanguage={setLanguage} currentPage={currentPage} />
+      <Navbar
+        language={language}
+        setLanguage={setLanguage}
+        currentPage={currentPage}
+        experienceMode={experienceMode}
+        setExperienceMode={setExperienceMode}
+      />
       <main id="main-content">
         {currentPage === 'projects' ? (
-          <Projects language={language} />
+          <Projects language={language} experienceMode={experienceMode} />
         ) : currentPage === 'flokka-details' ? (
-          <FlokkaCaseStudyPage language={language} />
+          <FlokkaCaseStudyPage language={language} experienceMode={experienceMode} />
         ) : currentPage === 'skills' ? (
-          <SkillsPage language={language} />
+          <SkillsPage language={language} experienceMode={experienceMode} />
         ) : (
-          <Home language={language} setLanguage={setLanguage} />
+          <Home language={language} setLanguage={setLanguage} experienceMode={experienceMode} />
         )}
       </main>
       <BackToTopButton />
