@@ -1,60 +1,803 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="icon" type="image/jpeg" href="/My Image.jpg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aditya Sharma | AI Backend Engineer Portfolio</title>
-    <meta
-      name="description"
-      content="Portfolio of Aditya Sharma, AI backend engineer building RAG pipelines, knowledge graph systems, and production-grade FastAPI architectures."
-    />
-    <meta name="keywords" content="AI Engineer, Machine Learning, RAG, FastAPI, Neo4j, Backend Engineer, MLOps" />
-    <meta property="og:title" content="Aditya Sharma | AI Backend Engineer Portfolio" />
-    <meta
-      property="og:description"
-      content="AI backend systems, knowledge graph engineering, and production-focused ML architecture."
-    />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="/og-banner.svg" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Aditya Sharma | AI Backend Engineer Portfolio" />
-    <meta
-      name="twitter:description"
-      content="AI backend systems, knowledge graph engineering, and production-focused ML architecture."
-    />
-    <meta name="twitter:image" content="/og-banner.svg" />
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "Person",
-            "name": "Aditya Sharma",
-            "jobTitle": "AI Backend Engineer",
-            "url": "https://www.linkedin.com/in/ursadityasharma",
-            "sameAs": [
-              "https://github.com/MasterAditya",
-              "https://www.linkedin.com/in/ursadityasharma"
-            ]
-          },
-          {
-            "@type": "CreativeWork",
-            "name": "Aditya Sharma AI Portfolio",
-            "description": "Portfolio showcasing RAG pipelines, knowledge graph systems, and production-grade FastAPI engineering.",
-            "creator": {
-              "@type": "Person",
-              "name": "Aditya Sharma"
-            }
-          }
-        ]
-      }
-    </script>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aditya Sharma | Backend & AI Systems Developer</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    /* Custom thin scrollbar matching neutral dark theme */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #09090b;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #27272a;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3f3f46;
+    }
+  </style>
+</head>
+<body class="bg-[#09090B] text-[#ECECF1] min-h-screen selection:bg-[#10B981]/20 selection:text-white antialiased">
+  <div id="root"></div>
+
+  <!-- React & Babel CDNs -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    function App() {
+      const [activePipeline, setActivePipeline] = useState('rlis'); // 'rlis' or 'insight'
+      const [selectedProject, setSelectedProject] = useState(null); // No project selected by default
+      const [pipelineStep, setPipelineStep] = useState(0);
+      const [showSkinPipeline, setShowSkinPipeline] = useState(false);
+      const [hoveredProject, setHoveredProject] = useState(null);
+
+      // Building section items (strictly informational)
+      const buildingItems = [
+        { id: 'nlp', label: 'NLP Systems' },
+        { id: 'kg', label: 'Knowledge Graph Platforms' },
+        { id: 'gis', label: 'Geospatial Intelligence Applications' }
+      ];
+
+      // RLIS Punjab Pipeline Steps
+      const rlisPipeline = [
+        {
+          stage: "Driver Log",
+          desc: "Raw Hinglish logging ingress",
+          code: "log = \"Driver report: bypass road te crash hoya near GT road cross over\""
+        },
+        {
+          stage: "Hinglish NLP",
+          desc: "Entity recognition parser extraction",
+          code: "nlp_tokens = tokenizer.parse_bilingual(log) \n# -> ['crash', 'GT road', 'bypass']"
+        },
+        {
+          stage: "Incident Classification",
+          desc: "Multi-class categorization validation",
+          code: "classification = model.predict(nlp_tokens) \n# Returns: ACCIDENT (conf: 0.94)"
+        },
+        {
+          stage: "Severity Detection",
+          desc: "Analyzing disruption indicators",
+          code: "severity = analyze_impact(nlp_tokens) \n# Returns: HIGH (Bypass block detected)"
+        },
+        {
+          stage: "PostGIS Resolution",
+          desc: "Query spatial data geometry points",
+          code: "SELECT ST_AsGeoJSON(geom) \nFROM punjab_roads \nWHERE name % 'GT road bypass';"
+        },
+        {
+          stage: "Map Visualization",
+          desc: "Deploy coordinates metadata object",
+          code: "payload = { \n  state: 'active', \n  lat: 31.326, \n  lng: 75.576, \n  severity: 'high' \n}"
+        },
+        {
+          stage: "Glass Box Reasoning",
+          desc: "Interpretability output explanation",
+          code: "explanation = explain_prediction(model) \n# 'Incident mapped via bilingual verb \\'crash hoya\\''"
+        }
+      ];
+
+      // InsightLens Pipeline Steps
+      const insightPipeline = [
+        {
+          stage: "Document Upload",
+          desc: "Buffered async ingestion queue streams",
+          code: "await storage_client.upload(file_stream)"
+        },
+        {
+          stage: "Text Extraction",
+          desc: "Read unformatted binary document trees",
+          code: "raw_text = document_parser.extract_content(file_stream)"
+        },
+        {
+          stage: "Entity Recognition",
+          desc: "spaCy NER mapping parsing layers",
+          code: "entities = spacy_ner(raw_text) \n# -> [('Aditya', 'PERSON'), ('Systems', 'ORG')]"
+        },
+        {
+          stage: "Relationship Extraction",
+          desc: "Identify semantic association rules",
+          code: "relations = map_semantics(entities) \n# -> ('Aditya')-[:DEVELOPED]->('Systems')"
+        },
+        {
+          stage: "Knowledge Graph Construction",
+          desc: "Build node connection metadata",
+          code: "nodes = build_graph_nodes(entities, relations)"
+        },
+        {
+          stage: "Neo4j Storage",
+          desc: "Execute database relationship insert",
+          code: "tx.run(\n  \"MERGE (p:Person {name: $n1}) \" +\n  \"MERGE (o:Org {name: $n2}) \" +\n  \"CREATE (p)-[:MEMBER]->(o)\"\n)"
+        }
+      ];
+
+      const getActivePipelineData = () => {
+        return activePipeline === 'rlis' ? rlisPipeline : insightPipeline;
+      };
+
+      // Automatically advance pipeline step over time
+      useEffect(() => {
+        const pipelineLength = getActivePipelineData().length;
+        const interval = setInterval(() => {
+          setPipelineStep((prev) => (prev + 1) % pipelineLength);
+        }, 4500);
+        return () => clearInterval(interval);
+      }, [activePipeline]);
+
+      const handleViewArchitecture = (pipelineKey, e) => {
+        if (e) e.stopPropagation();
+        setSelectedProject(pipelineKey);
+        setActivePipeline(pipelineKey);
+        setPipelineStep(0);
+        const element = document.getElementById('architecture-explorer');
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      };
+
+      const handleCardSelect = (key, e) => {
+        if (e) e.stopPropagation();
+        setSelectedProject(key);
+        if (key === 'rlis' || key === 'insight') {
+          setActivePipeline(key);
+          setPipelineStep(0);
+        } else if (key === 'skin') {
+          setShowSkinPipeline(true);
+        }
+      };
+
+      // Determine active project highlighting based on hover & select coordination
+      const isCardActive = (key) => {
+        if (hoveredProject !== null) {
+          return hoveredProject === key;
+        }
+        return selectedProject === key;
+      };
+
+      const getProjectCardClasses = (key) => {
+        const active = isCardActive(key);
+        if (active) {
+          return 'border-emerald-500/50 bg-[#111116] shadow-[0_0_24px_rgba(16,185,129,0.08)]';
+        } else {
+          return 'border-zinc-800 bg-[#0B0B0F] hover:border-emerald-500/30 hover:shadow-[0_0_16px_rgba(16,185,129,0.04)]';
+        }
+      };
+
+      // Global click handler to clear selected state when other areas are clicked
+      const handleGlobalClick = () => {
+        setSelectedProject(null);
+      };
+
+      return (
+        <div className="flex flex-col min-h-screen" onClick={handleGlobalClick}>
+          
+          {/* GLOBAL HEADER BAR */}
+          <header className="sticky top-0 z-50 border-b border-zinc-850 bg-[#09090B]/95 backdrop-blur-md px-4 sm:px-6 lg:px-8 py-4" onClick={(e) => e.stopPropagation()}>
+            <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
+              <div className="flex items-center gap-2">
+                <div className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="font-bold tracking-tight text-white font-sans text-xs sm:text-sm">Aditya Sharma</span>
+                <span className="text-zinc-700 text-xs hidden sm:inline">/</span>
+                <span className="text-zinc-500 text-[10px] hidden sm:inline mono">developer_node</span>
+              </div>
+              
+              {/* Quick Actions Navigation */}
+              <div className="flex items-center gap-2">
+                <a 
+                  href="https://github.com/MasterAditya" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="flex items-center gap-1.5 bg-zinc-900/60 hover:bg-zinc-800 hover:text-emerald-400 border border-zinc-800 hover:border-emerald-500/30 text-[11px] font-semibold py-1.5 px-3 rounded-lg transition-all font-sans text-zinc-300"
+                  title="GitHub Profile"
+                >
+                  <i data-lucide="github" className="w-3.5 h-3.5"></i>
+                  <span className="hidden sm:inline">GitHub</span>
+                </a>
+                <a 
+                  href="https://linkedin.com/in/ursadityasharma" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="flex items-center gap-1.5 bg-zinc-900/60 hover:bg-zinc-800 hover:text-emerald-400 border border-zinc-800 hover:border-emerald-500/30 text-[11px] font-semibold py-1.5 px-3 rounded-lg transition-all font-sans text-zinc-300"
+                  title="LinkedIn Profile"
+                >
+                  <i data-lucide="linkedin" className="w-3.5 h-3.5"></i>
+                  <span className="hidden sm:inline">LinkedIn</span>
+                </a>
+                <a 
+                  href="mailto:aditya.828777@gmail.com" 
+                  className="flex items-center gap-1.5 bg-zinc-900/60 hover:bg-zinc-800 hover:text-emerald-400 border border-zinc-800 hover:border-emerald-500/30 text-[11px] font-semibold py-1.5 px-3 rounded-lg transition-all font-sans text-zinc-300"
+                  title="Email Address"
+                >
+                  <i data-lucide="mail" className="w-3.5 h-3.5"></i>
+                  <span className="hidden sm:inline">Contact</span>
+                </a>
+                <a 
+                  href="#" 
+                  className="flex items-center gap-1.5 bg-zinc-900/60 hover:bg-zinc-800 hover:text-emerald-400 border border-zinc-800 hover:border-emerald-500/30 text-[11px] font-semibold py-1.5 px-3 rounded-lg transition-all font-sans text-zinc-300"
+                  title="Download CV"
+                >
+                  <i data-lucide="file-text" className="w-3.5 h-3.5"></i>
+                  <span>Resume</span>
+                </a>
+              </div>
+            </div>
+          </header>
+
+          {/* MAIN PAGE CONTAINER (Squeezed layout vertical margins) */}
+          <main className="flex-1 max-w-6xl w-full mx-auto py-8 sm:py-10 px-4 sm:px-6 space-y-10 sm:space-y-12">
+            
+            {/* HERO PROFILE SUMMARY */}
+            <section className="bg-[#0B0B0F]/80 border border-zinc-800 rounded-xl p-6 md:p-8 flex flex-col md:flex-row gap-6 md:gap-8 items-center md:items-start justify-between" onClick={(e) => e.stopPropagation()}>
+              
+              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left flex-1">
+                <div className="relative shrink-0">
+                  <img 
+                    src="My Image.jpg" 
+                    alt="Aditya Sharma" 
+                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-cover border border-zinc-800"
+                    onError={(e) => { e.target.src = 'https://placehold.co/150x150/111827/ffffff?text=Aditya'; }}
+                  />
+                  <div className="absolute -bottom-1 -right-1 h-3.5 w-3.5 rounded-full bg-emerald-500 border-2 border-[#09090B] animate-pulse" />
+                </div>
+                
+                <div className="space-y-3 flex-1">
+                  <div className="space-y-1">
+                    <span className="mono text-[9px] text-zinc-500 uppercase tracking-widest block">Developer Profile</span>
+                    <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-sans">Aditya Sharma</h1>
+                    <p className="text-xs text-zinc-400 font-sans font-semibold tracking-wide">Backend & AI Systems Developer</p>
+                  </div>
+                  
+                  {/* Clean Spec Layout for instant scan - Strictly Hover Only */}
+                  <div className="pt-1.5">
+                    <span className="text-[10px] text-zinc-500 font-bold block uppercase tracking-wider mb-2 font-mono">Building:</span>
+                    <ul className="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs font-sans text-zinc-300">
+                      {buildingItems.map((item) => {
+                        return (
+                          <li 
+                            key={item.id}
+                            className="flex items-center gap-2 px-3 py-2 rounded-lg border border-zinc-900 bg-zinc-950/50 text-zinc-300 hover:border-emerald-500/30 hover:text-white hover:shadow-[0_0_12px_rgba(16,185,129,0.06)] transition-all duration-200 group cursor-default"
+                          >
+                            <span className="w-1.5 h-1.5 rounded-full bg-zinc-600 group-hover:bg-emerald-400 transition-colors duration-200" />
+                            <span className="text-[11px] font-medium tracking-wide">{item.label}</span>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              {/* Opportunities Status Tracker */}
+              <div className="w-full md:w-auto shrink-0 bg-zinc-950/40 border border-zinc-850 rounded-xl p-4 space-y-3 text-xs min-w-[210px]">
+                <div className="flex items-center justify-between border-b border-zinc-900 pb-2">
+                  <span className="text-zinc-500 uppercase tracking-wider text-[8px] font-mono font-bold">Status</span>
+                  <span className="mono text-[9px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded font-medium">
+                    Available for Backend & AI Roles
+                  </span>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="text-zinc-400 font-sans">Primary Stack</span>
+                    <span className="mono text-zinc-200">Python • Go</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="text-zinc-400 font-sans">Databases</span>
+                    <span className="mono text-zinc-200">PostGIS • Neo4j</span>
+                  </div>
+                </div>
+              </div>
+
+            </section>
+
+            {/* FEATURED PROJECTS SECTION */}
+            <section className="space-y-6">
+              <div className="border-b border-zinc-850 pb-4">
+                <h2 className="text-xs font-bold uppercase tracking-widest text-zinc-300 font-mono flex items-center gap-2">
+                  <i data-lucide="database" className="w-3.5 h-3.5 text-zinc-400"></i> Featured Projects
+                </h2>
+              </div>
+
+              {/* Project Cards Grid */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                {/* PROJECT 1: RURAL LOGISTICS INTELLIGENCE SYSTEM */}
+                <div 
+                  onClick={(e) => handleCardSelect('rlis', e)}
+                  onMouseEnter={() => setHoveredProject('rlis')}
+                  onMouseLeave={() => setHoveredProject(null)}
+                  className={`border rounded-xl flex flex-col justify-between transition-all duration-300 group relative overflow-hidden cursor-pointer ${getProjectCardClasses('rlis')}`}
+                >
+                  <div className="p-6 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold text-zinc-400 bg-zinc-800/30 border border-zinc-700/30 px-2 py-0.5 rounded-md tracking-wider">
+                        Production System
+                      </span>
+                    </div>
+                    <div>
+                      <h3 className={`text-base font-bold font-sans transition-colors duration-300 ${isCardActive('rlis') ? 'text-emerald-400' : 'text-white'}`}>
+                        Rural Logistics Intelligence System
+                      </h3>
+                      <p className="text-[10px] text-zinc-400 font-sans mt-0.5 font-medium">AI Systems • NLP • Geospatial Intelligence</p>
+                    </div>
+                    <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                      An AI-powered rural logistics intelligence platform that transforms unstructured Hinglish driver logs into actionable geospatial intelligence.
+                    </p>
+                    
+                    <div className="space-y-2 pt-2">
+                      <span className="text-[9px] text-zinc-500 font-bold block uppercase tracking-wider">Key Highlights:</span>
+                      <ul className="text-xs text-zinc-400 space-y-1.5">
+                        <li className="flex items-center gap-2">
+                          <div className={`w-1.5 h-1.5 rounded-full transition-colors duration-300 ${isCardActive('rlis') ? 'bg-emerald-500' : 'bg-zinc-700'}`} /> 
+                          Hinglish NLP processing
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <div className={`w-1.5 h-1.5 rounded-full transition-colors duration-300 ${isCardActive('rlis') ? 'bg-emerald-500' : 'bg-zinc-700'}`} /> 
+                          PostGIS integration & GIS mapping
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <div className={`w-1.5 h-1.5 rounded-full transition-colors duration-300 ${isCardActive('rlis') ? 'bg-emerald-500' : 'bg-zinc-700'}`} /> 
+                          Explainable AI reasoning
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className="p-4 bg-zinc-950/80 border-t border-zinc-850/80 rounded-b-xl flex flex-col gap-3">
+                    <div className="flex gap-2">
+                      <button 
+                        onClick={(e) => handleViewArchitecture('rlis', e)}
+                        className="flex-1 text-center bg-zinc-900 hover:bg-zinc-800 hover:text-white text-zinc-200 border border-zinc-800/80 hover:border-emerald-500/30 text-[11px] font-semibold py-1.5 rounded-lg transition-all font-sans flex items-center justify-center gap-1.5"
+                      >
+                        <i data-lucide="eye" className="w-3.5 h-3.5"></i>
+                        <span>Explore System</span>
+                      </button>
+                      <a 
+                        href="https://github.com/MasterAditya/rlis-punjab" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        onClick={(e) => e.stopPropagation()}
+                        className="p-1.5 shrink-0 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800/80 hover:border-emerald-500/30 rounded-lg text-zinc-400 hover:text-white transition-colors flex items-center gap-1 text-[11px]"
+                        title="View GitHub Repository"
+                      >
+                        <i data-lucide="github" className="w-3.5 h-3.5"></i>
+                        <span className="mono text-[10px] hidden sm:inline">Repo</span>
+                      </a>
+                    </div>
+                    <div className="flex flex-wrap gap-1">
+                      {['FastAPI', 'PostgreSQL', 'PostGIS', 'React', 'Scikit-Learn', 'Docker'].map((tech) => (
+                        <span key={tech} className="mono text-[8.5px] bg-zinc-900 border border-zinc-800/60 text-zinc-400 px-1.5 py-0.5 rounded">
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* PROJECT 2: INSIGHTLENS BACKEND */}
+                <div 
+                  onClick={(e) => handleCardSelect('insight', e)}
+                  onMouseEnter={() => setHoveredProject('insight')}
+                  onMouseLeave={() => setHoveredProject(null)}
+                  className={`border rounded-xl flex flex-col justify-between transition-all duration-300 group relative overflow-hidden cursor-pointer ${getProjectCardClasses('insight')}`}
+                >
+                  <div className="p-6 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold text-zinc-400 bg-zinc-800/30 border border-[#3f3f46]/30 px-2 py-0.5 rounded-md tracking-wider">
+                        Knowledge Graph System
+                      </span>
+                    </div>
+                    <div>
+                      <h3 className={`text-base font-bold font-sans transition-colors duration-300 ${isCardActive('insight') ? 'text-emerald-400' : 'text-white'}`}>
+                        InsightLens Backend
+                      </h3>
+                      <p className="text-[10px] text-zinc-400 font-sans mt-0.5 font-medium">Backend Systems • Knowledge Graphs</p>
+                    </div>
+                    <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                      An asynchronous document intelligence backend that extracts entities and relationships from uploaded documents and stores them in a Neo4j knowledge graph.
+                    </p>
+                    
+                    <div className="space-y-2 pt-2">
+                      <span className="text-[9px] text-zinc-500 font-bold block uppercase tracking-wider">Key Highlights:</span>
+                      <ul className="text-xs text-zinc-400 space-y-1.5">
+                        <li className="flex items-center gap-2">
+                          <div className={`w-1.5 h-1.5 rounded-full transition-colors duration-300 ${isCardActive('insight') ? 'bg-emerald-500' : 'bg-zinc-700'}`} /> 
+                          Async document stream processing
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <div className={`w-1.5 h-1.5 rounded-full transition-colors duration-300 ${isCardActive('insight') ? 'bg-emerald-500' : 'bg-zinc-700'}`} /> 
+                          spaCy Named Entity Recognition parsing
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <div className={`w-1.5 h-1.5 rounded-full transition-colors duration-300 ${isCardActive('insight') ? 'bg-emerald-500' : 'bg-zinc-700'}`} /> 
+                          Structuring semantic graph inside Neo4j
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className="p-4 bg-zinc-950/80 border-t border-zinc-850/80 rounded-b-xl flex flex-col gap-3">
+                    <div className="flex gap-2">
+                      <button 
+                        onClick={(e) => handleViewArchitecture('insight', e)}
+                        className="flex-1 text-center bg-zinc-900 hover:bg-zinc-800 hover:text-white text-zinc-200 border border-zinc-800/80 hover:border-emerald-500/30 text-[11px] font-semibold py-1.5 rounded-lg transition-all font-sans flex items-center justify-center gap-1.5"
+                      >
+                        <i data-lucide="eye" className="w-3.5 h-3.5"></i>
+                        <span>Explore System</span>
+                      </button>
+                      <a 
+                        href="https://github.com/MasterAditya/insightlens-backend" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        onClick={(e) => e.stopPropagation()}
+                        className="p-1.5 shrink-0 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800/80 hover:border-emerald-500/30 rounded-lg text-zinc-400 hover:text-white transition-colors flex items-center gap-1 text-[11px]"
+                        title="View GitHub Repository"
+                      >
+                        <i data-lucide="github" className="w-3.5 h-3.5"></i>
+                        <span className="mono text-[10px] hidden sm:inline">Repo</span>
+                      </a>
+                    </div>
+                    <div className="flex flex-wrap gap-1">
+                      {['FastAPI', 'Neo4j', 'spaCy', 'Docker', 'AsyncIO'].map((tech) => (
+                        <span key={tech} className="mono text-[8.5px] bg-zinc-900 border border-zinc-800/60 text-zinc-400 px-1.5 py-0.5 rounded">
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* PROJECT 3: SKIN CANCER DETECTION PROTOTYPE */}
+                <div 
+                  onClick={(e) => handleCardSelect('skin', e)}
+                  onMouseEnter={() => setHoveredProject('skin')}
+                  onMouseLeave={() => setHoveredProject(null)}
+                  className={`border rounded-xl flex flex-col justify-between transition-all duration-300 group relative overflow-hidden cursor-pointer ${getProjectCardClasses('skin')}`}
+                >
+                  <div className="p-6 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold text-zinc-400 bg-zinc-800/30 border border-zinc-700/30 px-2 py-0.5 rounded-md tracking-wider">
+                        Research Prototype
+                      </span>
+                    </div>
+                    <div>
+                      <h3 className={`text-base font-bold font-sans transition-colors duration-300 ${isCardActive('skin') ? 'text-emerald-400' : 'text-white'}`}>
+                        Skin Cancer Detection
+                      </h3>
+                      <p className="text-[10px] text-zinc-400 font-sans mt-0.5 font-medium">Computer Vision • Machine Learning</p>
+                    </div>
+                    <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                      A machine learning prototype for automated skin lesion classification using computer vision preprocessing and image classification techniques.
+                    </p>
+                    
+                    {/* Inline lightweight Skin Cancer Model Pipeline Visualizer */}
+                    <div className="bg-zinc-950/60 border border-zinc-850 p-3.5 rounded-lg space-y-2.5 mt-2" onClick={(e) => e.stopPropagation()}>
+                      <div className="flex justify-between items-center pb-2 border-b border-zinc-900">
+                        <span className="text-[9px] uppercase tracking-wider font-bold text-zinc-400">Model Pipeline Flow</span>
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); setShowSkinPipeline(!showSkinPipeline); setSelectedProject('skin'); }}
+                          className="text-[9px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded font-medium hover:bg-emerald-500/20 transition-all"
+                        >
+                          {showSkinPipeline ? "Hide Pipeline" : "View Pipeline"}
+                        </button>
+                      </div>
+                      
+                      {showSkinPipeline ? (
+                        <div className="space-y-2 text-[10px]">
+                          <div className="flex items-center gap-1.5 text-zinc-300">
+                            <span className="text-zinc-500 w-3 font-bold font-mono">1</span>
+                            <span className="bg-zinc-900 border border-zinc-800 px-1.5 py-0.5 rounded font-mono">Image Input</span>
+                            <span className="text-zinc-500 font-sans">→ Raw lesion feed</span>
+                          </div>
+                          <div className="flex items-center gap-1.5 text-zinc-300">
+                            <span className="text-zinc-500 w-3 font-bold font-mono">2</span>
+                            <span className="bg-zinc-900 border border-zinc-800 px-1.5 py-0.5 rounded font-mono">Preprocessing</span>
+                            <span className="text-zinc-500 font-sans">→ Normalize & augment</span>
+                          </div>
+                          <div className="flex items-center gap-1.5 text-zinc-300">
+                            <span className="text-zinc-500 w-3 font-bold font-mono">3</span>
+                            <span className="bg-zinc-900 border border-zinc-800 px-1.5 py-0.5 rounded font-mono">CNN Inference</span>
+                            <span className="text-zinc-500 font-sans">→ Layer activations</span>
+                          </div>
+                          <div className="flex items-center gap-1.5 text-zinc-300">
+                            <span className="text-zinc-500 w-3 font-bold font-mono">4</span>
+                            <span className="bg-zinc-900 border border-zinc-800 px-1.5 py-0.5 rounded font-mono">Prediction</span>
+                            <span className="text-zinc-500 font-sans">→ Target metrics</span>
+                          </div>
+                        </div>
+                      ) : (
+                        <p className="text-[10px] text-zinc-500 italic font-sans py-1">Click &apos;View Pipeline&apos; to expand visual tensor block.</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="p-4 bg-zinc-950/80 border-t border-zinc-850/80 rounded-b-xl flex flex-col gap-3">
+                    <div className="flex gap-2">
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); setShowSkinPipeline(!showSkinPipeline); setSelectedProject('skin'); }}
+                        className="flex-1 text-center bg-zinc-900 hover:bg-zinc-800 hover:text-white text-zinc-200 border border-zinc-800/80 hover:border-emerald-500/30 text-[11px] font-semibold py-1.5 rounded-lg transition-all font-sans flex items-center justify-center gap-1.5"
+                      >
+                        <i data-lucide="cpu" className="w-3.5 h-3.5"></i>
+                        <span>View Model Pipeline</span>
+                      </button>
+                      <a 
+                        href="https://github.com/MasterAditya/skin-cancer-detection-prototype" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        onClick={(e) => e.stopPropagation()}
+                        className="p-1.5 shrink-0 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800/80 hover:border-emerald-500/30 rounded-lg text-zinc-400 hover:text-white transition-colors flex items-center gap-1 text-[11px]"
+                        title="View GitHub Repository"
+                      >
+                        <i data-lucide="github" className="w-3.5 h-3.5"></i>
+                        <span className="mono text-[10px] hidden sm:inline">Repo</span>
+                      </a>
+                    </div>
+                    <div className="flex flex-wrap gap-1">
+                      {['Python', 'PyTorch', 'TensorFlow', 'OpenCV', 'NumPy', 'Scikit-Learn'].map((tech) => (
+                        <span key={tech} className="mono text-[8.5px] bg-zinc-900 border border-zinc-800/60 text-zinc-400 px-1.5 py-0.5 rounded">
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </section>
+
+            {/* ARCHITECTURE EXPLORER SECTION (Squeezed individual processing list heights & vertical spacing by 10-15%) */}
+            <section id="architecture-explorer" className="space-y-6 pt-4" onClick={(e) => e.stopPropagation()}>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-850 pb-4">
+                <div className="space-y-1">
+                  <h2 className="text-xs font-bold uppercase tracking-widest text-zinc-300 font-mono flex items-center gap-2">
+                    <i data-lucide="git-branch" className="w-3.5 h-3.5 text-zinc-400"></i> System Deep Dive
+                  </h2>
+                  <p className="text-zinc-500 text-[11px] font-sans">
+                    Trace downstream information flow blocks and design architecture schemas.
+                  </p>
+                </div>
+                
+                {/* Active pipeline switcher tabs */}
+                <div className="flex items-center gap-1.5 bg-zinc-950 border border-zinc-850 p-1 rounded-xl self-start">
+                  <button 
+                    onClick={() => { setActivePipeline('rlis'); setSelectedProject('rlis'); setPipelineStep(0); }}
+                    className={`text-[10px] px-3.5 py-1.5 rounded-lg transition-all font-sans font-medium border ${
+                      activePipeline === 'rlis' 
+                        ? 'bg-zinc-900 border-emerald-500/50 text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.05)]' 
+                        : 'border-transparent text-zinc-400 hover:text-white'
+                    }`}
+                  >
+                    Rural Logistics
+                  </button>
+                  <button 
+                    onClick={() => { setActivePipeline('insight'); setSelectedProject('insight'); setPipelineStep(0); }}
+                    className={`text-[10px] px-3.5 py-1.5 rounded-lg transition-all font-sans font-medium border ${
+                      activePipeline === 'insight' 
+                        ? 'bg-zinc-900 border-emerald-500/50 text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.05)]' 
+                        : 'border-transparent text-zinc-400 hover:text-white'
+                    }`}
+                  >
+                    InsightLens
+                  </button>
+                </div>
+              </div>
+
+              {/* Redesigned Flow Sandbox */}
+              <div className="bg-[#0B0B0E] border border-zinc-800 rounded-xl p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch min-h-[380px]">
+                
+                {/* Pipeline Downstream Flow Visualizer List */}
+                <div className="lg:col-span-6 flex flex-col justify-between space-y-4">
+                  <div className="space-y-1">
+                    <span className="mono text-[8px] text-zinc-500 uppercase tracking-widest block">System Flow Visualizer</span>
+                    <h3 className="text-xs font-semibold text-zinc-200 tracking-tight font-sans">
+                      {activePipeline === 'rlis' 
+                        ? 'Rural Logistics Intelligence System Flow Diagram' 
+                        : 'InsightLens Knowledge Graph Extraction Flow Diagram'
+                      }
+                    </h3>
+                  </div>
+
+                  {/* Flow steps container (Squeezed to optimize list height & vertical spacing by 10-15%) */}
+                  <div className="space-y-0.5 flex-1 pt-1">
+                    {getActivePipelineData().map((step, idx) => (
+                      <div key={idx} className="flex flex-col">
+                        <div 
+                          onClick={() => setPipelineStep(idx)}
+                          className={`flex items-center gap-3 p-1 rounded-lg border transition-all cursor-pointer ${
+                            pipelineStep === idx 
+                              ? 'bg-zinc-950 border-emerald-500/40 text-emerald-400' 
+                              : 'bg-transparent border-transparent text-zinc-400 hover:bg-zinc-900/30 hover:text-zinc-200'
+                          }`}
+                        >
+                          <div className={`mono text-[9px] font-bold h-5 w-5 rounded flex items-center justify-center border transition-all ${
+                            pipelineStep === idx 
+                              ? 'border-emerald-500/50 text-emerald-400 bg-zinc-900' 
+                              : 'border-zinc-800 text-zinc-500 bg-zinc-950'
+                          }`}>
+                            {idx + 1}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className={`text-[11px] font-semibold tracking-wide ${pipelineStep === idx ? 'text-emerald-400' : 'text-zinc-300'}`}>
+                              {step.stage}
+                            </div>
+                            <div className="text-[9px] text-zinc-500 truncate leading-tight">{step.desc}</div>
+                          </div>
+                          {pipelineStep === idx && (
+                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-ping" />
+                          )}
+                        </div>
+                        {idx < getActivePipelineData().length - 1 && (
+                          <div className="h-1 flex items-center pl-[18px]">
+                            <div className="w-[1px] h-full bg-zinc-800 border-dashed animate-pulse" />
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Code Specification Pane */}
+                <div className="lg:col-span-6 bg-zinc-950 border border-zinc-850 rounded-xl p-5 flex flex-col justify-between min-h-[300px]">
+                  <div className="flex items-center justify-between border-b border-zinc-900 pb-3 mb-3">
+                    <div className="flex items-center gap-1.5">
+                      <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      <span className="mono text-[8px] text-zinc-400 font-bold uppercase">Specification Trace</span>
+                    </div>
+                    <span className="mono text-[8px] text-zinc-500">Live code trace</span>
+                  </div>
+                  
+                  {/* Pipeline Step Detail */}
+                  <div className="flex-1 flex flex-col justify-between space-y-4">
+                    <pre className="mono text-[10px] text-zinc-300 overflow-x-auto whitespace-pre-wrap py-3 px-4 flex-1 leading-relaxed bg-[#060608] rounded-lg border border-zinc-900">
+                      <code>
+                        {getActivePipelineData()[pipelineStep] && getActivePipelineData()[pipelineStep].code}
+                      </code>
+                    </pre>
+                    <div className="text-[10px] text-zinc-500 border-t border-zinc-900 pt-3 flex items-center gap-1.5 font-sans">
+                      <i data-lucide="info" className="w-3.5 h-3.5 text-zinc-600"></i> 
+                      <span>Select diagram stages to inspect corresponding structural specifications.</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </section>
+
+            {/* TECHNICAL INVENTORY: COHESIVE SYSTEM CHIPS (Overridden spacing to close vertical gaps) */}
+            <section className="space-y-4 !mt-8 sm:!mt-10 pt-4 sm:pt-5 border-t border-zinc-900" onClick={(e) => e.stopPropagation()}>
+              <div>
+                <h2 className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500 font-mono flex items-center gap-2">
+                  <i data-lucide="server" className="w-3 h-3 text-zinc-500"></i> Technical Inventory
+                </h2>
+              </div>
+
+              {/* Minimalist Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                
+                {/* BACKEND */}
+                <div className="bg-transparent border border-zinc-900/60 p-3 rounded-lg space-y-1.5 transition-all duration-350 hover:border-emerald-500/30 hover:shadow-[0_0_10px_rgba(16,185,129,0.04)] group cursor-default">
+                  <div className="flex items-center gap-1.5 text-zinc-500 group-hover:text-emerald-400 transition-colors">
+                    <i data-lucide="cpu" className="w-3.5 h-3.5"></i>
+                    <span className="text-[10px] font-bold font-sans text-zinc-400 group-hover:text-zinc-200">Backend</span>
+                  </div>
+                  <div className="space-y-0.5">
+                    {['Python', 'FastAPI'].map((t) => (
+                      <span key={t} className="block text-[10px] text-zinc-500 group-hover:text-zinc-400 transition-colors mono">{t}</span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* DATABASES */}
+                <div className="bg-transparent border border-zinc-900/60 p-3 rounded-lg space-y-1.5 transition-all duration-350 hover:border-emerald-500/30 hover:shadow-[0_0_10px_rgba(16,185,129,0.04)] group cursor-default">
+                  <div className="flex items-center gap-1.5 text-zinc-500 group-hover:text-emerald-400 transition-colors">
+                    <i data-lucide="database" className="w-3.5 h-3.5"></i>
+                    <span className="text-[10px] font-bold font-sans text-zinc-400 group-hover:text-zinc-200">Databases</span>
+                  </div>
+                  <div className="space-y-0.5">
+                    {['PostgreSQL', 'Neo4j', 'PostGIS'].map((t) => (
+                      <span key={t} className="block text-[10px] text-zinc-500 group-hover:text-zinc-400 transition-colors mono">{t}</span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* AI & MACHINE LEARNING */}
+                <div className="bg-transparent border border-zinc-900/60 p-3 rounded-lg space-y-1.5 transition-all duration-350 hover:border-emerald-500/30 hover:shadow-[0_0_10px_rgba(16,185,129,0.04)] group cursor-default">
+                  <div className="flex items-center gap-1.5 text-zinc-500 group-hover:text-emerald-400 transition-colors">
+                    <i data-lucide="activity" className="w-3.5 h-3.5"></i>
+                    <span className="text-[10px] font-bold font-sans text-zinc-400 group-hover:text-zinc-200">AI & ML</span>
+                  </div>
+                  <div className="space-y-0.5">
+                    {['Scikit-Learn', 'TensorFlow', 'PyTorch', 'spaCy', 'NLP Pipelines'].map((t) => (
+                      <span key={t} className="block text-[10px] text-zinc-500 group-hover:text-zinc-400 transition-colors mono">{t}</span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* INFRASTRUCTURE */}
+                <div className="bg-transparent border border-zinc-900/60 p-3 rounded-lg space-y-1.5 transition-all duration-350 hover:border-emerald-500/30 hover:shadow-[0_0_10px_rgba(16,185,129,0.04)] group cursor-default">
+                  <div className="flex items-center gap-1.5 text-zinc-500 group-hover:text-[#00d084] transition-colors">
+                    <i data-lucide="layers" className="w-3.5 h-3.5"></i>
+                    <span className="text-[10px] font-bold font-sans text-zinc-400 group-hover:text-zinc-200">Infrastructure</span>
+                  </div>
+                  <div className="space-y-0.5">
+                    {['Docker', 'Git', 'Linux'].map((t) => (
+                      <span key={t} className="block text-[10px] text-zinc-500 group-hover:text-zinc-400 transition-colors mono">{t}</span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* FRONTEND */}
+                <div className="bg-transparent border border-zinc-900/60 p-3 rounded-lg space-y-1.5 transition-all duration-350 hover:border-emerald-500/30 hover:shadow-[0_0_10px_rgba(16,185,129,0.04)] group cursor-default">
+                  <div className="flex items-center gap-1.5 text-zinc-500 group-hover:text-emerald-400 transition-colors">
+                    <i data-lucide="layout" className="w-3.5 h-3.5"></i>
+                    <span className="text-[10px] font-bold font-sans text-zinc-400 group-hover:text-zinc-200">Frontend</span>
+                  </div>
+                  <div className="space-y-0.5">
+                    {['React', 'JavaScript'].map((t) => (
+                      <span key={t} className="block text-[10px] text-zinc-500 group-hover:text-zinc-400 transition-colors mono">{t}</span>
+                    ))}
+                  </div>
+                </div>
+
+              </div>
+            </section>
+
+          </main>
+
+          {/* PROFESSIONAL MINIMAL COMPRESSED FOOTER */}
+          <footer className="border-t border-zinc-900 bg-zinc-950 py-6 px-4 sm:px-6 lg:px-8 mt-6 sm:mt-8 text-xs text-zinc-500 font-sans" onClick={(e) => e.stopPropagation()}>
+            <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+              
+              <div className="flex flex-col items-center sm:items-start gap-0.5">
+                <span className="font-medium text-zinc-400 tracking-wide text-center sm:text-left">Aditya Sharma</span>
+                <span className="text-zinc-500 text-[11px] text-center sm:text-left">Backend & AI Systems Developer</span>
+              </div>
+              
+              <div className="flex items-center gap-2 text-zinc-500 text-[11px]">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500/85 animate-pulse" />
+                <span>Available for Backend & AI Roles</span>
+              </div>
+
+            </div>
+          </footer>
+
+        </div>
+      );
+    }
+
+    const rootElement = document.getElementById('root');
+    const root = ReactDOM.createRoot(rootElement);
+    root.render(<App />);
+
+    // Initialize lucide icons once components are mounted
+    setTimeout(() => {
+      lucide.createIcons();
+    }, 500);
+  </script>
+</body>
 </html>
